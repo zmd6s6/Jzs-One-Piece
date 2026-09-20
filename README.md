@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/jzs-one-piece-banner.webp" alt="Jzs-One-Piece" width="100%" />
+</p>
+
 # Jzs-One-Piece
 
 > Building my own map of knowledge, one piece at a time.
