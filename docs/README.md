@@ -11,6 +11,7 @@ This directory is the canonical knowledge root.
 - [AI](./ai/README.md)
 - [Architecture](./architecture/README.md)
 - [Projects](./projects/README.md)
+- [Finance](./finance/README.md)
 - [Notes](./notes/README.md)
 
 New documents should follow the repository metadata and naming conventions described in [CONTRIBUTING.md](../CONTRIBUTING.md).
