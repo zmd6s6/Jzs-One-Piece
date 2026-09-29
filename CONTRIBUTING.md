@@ -11,6 +11,7 @@ This is a personal knowledge base, so "contribution" mainly means keeping future
 - `docs/ai/` — LLM, Agent, RAG, AI engineering
 - `docs/architecture/` — reusable architecture and design decisions
 - `docs/projects/` — project-specific knowledge
+- `docs/finance/` — finance, investing, macro, financial statements, valuation, industry cycles, risk management
 - `docs/notes/` — temporary, exploratory, or not-yet-stable notes
 
 ## File Naming
