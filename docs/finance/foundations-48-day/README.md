@@ -8,10 +8,25 @@ tags:
   - learning-path
 status: active
 created: 2026-09-29
-updated: 2026-09-29
+updated: 2026-10-05
 ---
 
 # 48天金融基础实战学习计划
+
+> 这份文档是**执行层**，不是知识正文。遇到概念不清时先阅读 [金融与投资基础手册](../handbook/README.md)，再完成当日任务。真实案例见 [案例库](../casebook/README.md)，延伸阅读见 [高价值阅读清单](../reading-list.md)。
+
+## 手册映射
+
+| 训练阶段 | 主要手册章节 | 配套案例 |
+| --- | --- | --- |
+| Days 01–06 市场机制 | [01 金融系统](../handbook/01-financial-system-and-market-mechanics.md)、[02 资产与工具](../handbook/02-asset-classes-and-instruments.md) | [恒生科技ETF](../casebook/case-05-hang-seng-tech-index.md) |
+| Days 07–12 风险 | [03 收益、风险与复利](../handbook/03-return-risk-and-compounding.md)、[10 组合与仓位](../handbook/10-portfolio-position-sizing-risk.md) | — |
+| Days 13–18 宏观 | [04 利率、通胀、信用与流动性](../handbook/04-rates-inflation-credit-liquidity.md) | [2022 美联储加息](../casebook/case-01-fed-2022-tightening.md) |
+| Days 19–24 财报 | [05 三张财务报表](../handbook/05-reading-financial-statements.md) | [宁德时代](../casebook/case-02-catl-2023-capital-intensive-growth.md)、[贵州茅台](../casebook/case-03-moutai-2023-cash-flow-capital-allocation.md) |
+| Days 25–30 企业质量 | [06 企业质量](../handbook/06-business-quality-and-moats.md) | [贵州茅台](../casebook/case-03-moutai-2023-cash-flow-capital-allocation.md) |
+| Days 31–36 估值 | [07 估值](../handbook/07-valuation-framework.md)、[09 市场预期](../handbook/09-market-pricing-expectations-flows.md) | [紫金矿业](../casebook/case-04-zijin-2019-2023-cycle-growth.md) |
+| Days 37–42 行业周期 | [08 行业供需与周期](../handbook/08-industry-supply-demand-cycle.md) | [紫金矿业](../casebook/case-04-zijin-2019-2023-cycle-growth.md)、[宁德时代](../casebook/case-02-catl-2023-capital-intensive-growth.md) |
+| Days 43–48 决策 | [11 投资决策流程](../handbook/11-investment-decision-process.md)、[12 行为金融](../handbook/12-behavioral-finance.md)、[13 研究工作流](../handbook/13-data-sources-and-research-workflow.md) | 使用 [Investment Memo 模板](../templates/investment-memo-template.md) |
 
 ## 目标
 
