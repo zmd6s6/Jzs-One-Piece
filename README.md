@@ -27,6 +27,7 @@
 | AI | `docs/ai/` | LLM、Agent、RAG、Coding Agent、AI 工作流 |
 | Architecture | `docs/architecture/` | 系统架构、客户端架构、服务端架构、设计决策 |
 | Projects | `docs/projects/` | 具体项目经验、方案、复盘 |
+| Finance | `docs/finance/` | 金融基础、宏观、财务分析、估值、行业周期、风险管理 |
 | Notes | `docs/notes/` | 尚未成熟但值得保留的思考与临时知识 |
 
 ## Repository Layout
@@ -41,6 +42,7 @@ Jzs-One-Piece/
 │  ├─ ai/
 │  ├─ architecture/
 │  ├─ projects/
+│  ├─ finance/
 │  └─ notes/
 ├─ assets/                  # 图片、图表与附件
 ├─ templates/               # 知识文档模板

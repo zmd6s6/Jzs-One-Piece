@@ -39,7 +39,7 @@ Knowledge documents should contain:
 ---
 title: Document Title
 description: One-sentence description
-category: cpp | qt | backend | devops | ai | architecture | projects | notes
+category: cpp | qt | backend | devops | ai | architecture | projects | finance | notes
 tags:
   - tag
 status: draft | active | stable | deprecated
