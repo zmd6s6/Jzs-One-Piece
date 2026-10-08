@@ -18,6 +18,9 @@ hero:
     - theme: alt
       text: 48 天学习计划
       link: /docs/finance/foundations-48-day/README
+    - theme: alt
+      text: 写文章
+      link: https://app.pagescms.org
 features:
   - title: 技术与架构
     details: C++、Qt、后端开发、DevOps 与系统设计，按领域持续积累。

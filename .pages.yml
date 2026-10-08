@@ -1,0 +1,1039 @@
+# Pages CMS: keep canonical Markdown under docs/ and reusable media under assets/.
+media:
+- name: article_images
+  label: 文章图片
+  input: assets/uploads
+  output: ../../assets/uploads
+  extensions:
+  - png
+  - jpg
+  - jpeg
+  - webp
+  - gif
+  rename: safe
+- name: article_images_deep
+  label: 金融专题图片
+  input: assets/uploads
+  output: ../../../assets/uploads
+  extensions:
+  - png
+  - jpg
+  - jpeg
+  - webp
+  - gif
+  rename: safe
+content:
+- name: notes
+  label: 随手记录
+  type: collection
+  path: docs/notes
+  format: yaml-frontmatter
+  subfolders: false
+  filename:
+    template: '{year}-{month}-{day}-{primary}.md'
+    field: create
+  view:
+    fields:
+    - title
+    - updated
+    - status
+    primary: title
+    sort:
+    - updated
+    - title
+    search:
+    - title
+    - description
+    - tags
+    default:
+      sort: updated
+      order: desc
+  fields:
+  - name: title
+    label: 文章标题
+    type: string
+    required: true
+  - name: description
+    label: 一句话摘要
+    type: text
+    required: true
+  - name: category
+    label: 分类
+    type: string
+    default: notes
+    hidden: true
+  - name: tags
+    label: 标签
+    type: string
+    list: true
+  - name: status
+    label: 内容成熟度
+    type: select
+    default: draft
+    description: 用于标记笔记的成熟度；保存后会更新公开网站。
+    options:
+      values:
+      - name: draft
+        label: 整理中
+      - name: active
+        label: 持续更新
+      - name: stable
+        label: 已稳定
+      - name: deprecated
+        label: 已过时
+  - name: created
+    label: 创建日期
+    type: date
+    options:
+      format: yyyy-MM-dd
+  - name: updated
+    label: 更新日期
+    type: date
+    description: 修改文章时选择今天的日期。
+    options:
+      format: yyyy-MM-dd
+  - name: body
+    label: 正文
+    type: rich-text
+    required: true
+    description: 支持标题、列表、代码块和图片；复杂 Markdown 可切换到 Source 模式。
+    options:
+      format: markdown
+      switcher: true
+      media: article_images
+- name: cpp
+  label: C++
+  type: collection
+  path: docs/cpp
+  format: yaml-frontmatter
+  subfolders: false
+  filename:
+    template: '{year}-{month}-{day}-{primary}.md'
+    field: create
+  view:
+    fields:
+    - title
+    - updated
+    - status
+    primary: title
+    sort:
+    - updated
+    - title
+    search:
+    - title
+    - description
+    - tags
+    default:
+      sort: updated
+      order: desc
+  fields:
+  - name: title
+    label: 文章标题
+    type: string
+    required: true
+  - name: description
+    label: 一句话摘要
+    type: text
+    required: true
+  - name: category
+    label: 分类
+    type: string
+    default: cpp
+    hidden: true
+  - name: tags
+    label: 标签
+    type: string
+    list: true
+  - name: status
+    label: 内容成熟度
+    type: select
+    default: draft
+    description: 用于标记笔记的成熟度；保存后会更新公开网站。
+    options:
+      values:
+      - name: draft
+        label: 整理中
+      - name: active
+        label: 持续更新
+      - name: stable
+        label: 已稳定
+      - name: deprecated
+        label: 已过时
+  - name: created
+    label: 创建日期
+    type: date
+    options:
+      format: yyyy-MM-dd
+  - name: updated
+    label: 更新日期
+    type: date
+    description: 修改文章时选择今天的日期。
+    options:
+      format: yyyy-MM-dd
+  - name: body
+    label: 正文
+    type: rich-text
+    required: true
+    description: 支持标题、列表、代码块和图片；复杂 Markdown 可切换到 Source 模式。
+    options:
+      format: markdown
+      switcher: true
+      media: article_images
+- name: qt
+  label: Qt
+  type: collection
+  path: docs/qt
+  format: yaml-frontmatter
+  subfolders: false
+  filename:
+    template: '{year}-{month}-{day}-{primary}.md'
+    field: create
+  view:
+    fields:
+    - title
+    - updated
+    - status
+    primary: title
+    sort:
+    - updated
+    - title
+    search:
+    - title
+    - description
+    - tags
+    default:
+      sort: updated
+      order: desc
+  fields:
+  - name: title
+    label: 文章标题
+    type: string
+    required: true
+  - name: description
+    label: 一句话摘要
+    type: text
+    required: true
+  - name: category
+    label: 分类
+    type: string
+    default: qt
+    hidden: true
+  - name: tags
+    label: 标签
+    type: string
+    list: true
+  - name: status
+    label: 内容成熟度
+    type: select
+    default: draft
+    description: 用于标记笔记的成熟度；保存后会更新公开网站。
+    options:
+      values:
+      - name: draft
+        label: 整理中
+      - name: active
+        label: 持续更新
+      - name: stable
+        label: 已稳定
+      - name: deprecated
+        label: 已过时
+  - name: created
+    label: 创建日期
+    type: date
+    options:
+      format: yyyy-MM-dd
+  - name: updated
+    label: 更新日期
+    type: date
+    description: 修改文章时选择今天的日期。
+    options:
+      format: yyyy-MM-dd
+  - name: body
+    label: 正文
+    type: rich-text
+    required: true
+    description: 支持标题、列表、代码块和图片；复杂 Markdown 可切换到 Source 模式。
+    options:
+      format: markdown
+      switcher: true
+      media: article_images
+- name: backend
+  label: Java / 后端开发
+  type: collection
+  path: docs/backend
+  format: yaml-frontmatter
+  subfolders: false
+  filename:
+    template: '{year}-{month}-{day}-{primary}.md'
+    field: create
+  view:
+    fields:
+    - title
+    - updated
+    - status
+    primary: title
+    sort:
+    - updated
+    - title
+    search:
+    - title
+    - description
+    - tags
+    default:
+      sort: updated
+      order: desc
+  fields:
+  - name: title
+    label: 文章标题
+    type: string
+    required: true
+  - name: description
+    label: 一句话摘要
+    type: text
+    required: true
+  - name: category
+    label: 分类
+    type: string
+    default: backend
+    hidden: true
+  - name: tags
+    label: 标签
+    type: string
+    list: true
+  - name: status
+    label: 内容成熟度
+    type: select
+    default: draft
+    description: 用于标记笔记的成熟度；保存后会更新公开网站。
+    options:
+      values:
+      - name: draft
+        label: 整理中
+      - name: active
+        label: 持续更新
+      - name: stable
+        label: 已稳定
+      - name: deprecated
+        label: 已过时
+  - name: created
+    label: 创建日期
+    type: date
+    options:
+      format: yyyy-MM-dd
+  - name: updated
+    label: 更新日期
+    type: date
+    description: 修改文章时选择今天的日期。
+    options:
+      format: yyyy-MM-dd
+  - name: body
+    label: 正文
+    type: rich-text
+    required: true
+    description: 支持标题、列表、代码块和图片；复杂 Markdown 可切换到 Source 模式。
+    options:
+      format: markdown
+      switcher: true
+      media: article_images
+- name: devops
+  label: DevOps
+  type: collection
+  path: docs/devops
+  format: yaml-frontmatter
+  subfolders: false
+  filename:
+    template: '{year}-{month}-{day}-{primary}.md'
+    field: create
+  view:
+    fields:
+    - title
+    - updated
+    - status
+    primary: title
+    sort:
+    - updated
+    - title
+    search:
+    - title
+    - description
+    - tags
+    default:
+      sort: updated
+      order: desc
+  fields:
+  - name: title
+    label: 文章标题
+    type: string
+    required: true
+  - name: description
+    label: 一句话摘要
+    type: text
+    required: true
+  - name: category
+    label: 分类
+    type: string
+    default: devops
+    hidden: true
+  - name: tags
+    label: 标签
+    type: string
+    list: true
+  - name: status
+    label: 内容成熟度
+    type: select
+    default: draft
+    description: 用于标记笔记的成熟度；保存后会更新公开网站。
+    options:
+      values:
+      - name: draft
+        label: 整理中
+      - name: active
+        label: 持续更新
+      - name: stable
+        label: 已稳定
+      - name: deprecated
+        label: 已过时
+  - name: created
+    label: 创建日期
+    type: date
+    options:
+      format: yyyy-MM-dd
+  - name: updated
+    label: 更新日期
+    type: date
+    description: 修改文章时选择今天的日期。
+    options:
+      format: yyyy-MM-dd
+  - name: body
+    label: 正文
+    type: rich-text
+    required: true
+    description: 支持标题、列表、代码块和图片；复杂 Markdown 可切换到 Source 模式。
+    options:
+      format: markdown
+      switcher: true
+      media: article_images
+- name: ai
+  label: AI 与 Agent
+  type: collection
+  path: docs/ai
+  format: yaml-frontmatter
+  subfolders: false
+  filename:
+    template: '{year}-{month}-{day}-{primary}.md'
+    field: create
+  view:
+    fields:
+    - title
+    - updated
+    - status
+    primary: title
+    sort:
+    - updated
+    - title
+    search:
+    - title
+    - description
+    - tags
+    default:
+      sort: updated
+      order: desc
+  fields:
+  - name: title
+    label: 文章标题
+    type: string
+    required: true
+  - name: description
+    label: 一句话摘要
+    type: text
+    required: true
+  - name: category
+    label: 分类
+    type: string
+    default: ai
+    hidden: true
+  - name: tags
+    label: 标签
+    type: string
+    list: true
+  - name: status
+    label: 内容成熟度
+    type: select
+    default: draft
+    description: 用于标记笔记的成熟度；保存后会更新公开网站。
+    options:
+      values:
+      - name: draft
+        label: 整理中
+      - name: active
+        label: 持续更新
+      - name: stable
+        label: 已稳定
+      - name: deprecated
+        label: 已过时
+  - name: created
+    label: 创建日期
+    type: date
+    options:
+      format: yyyy-MM-dd
+  - name: updated
+    label: 更新日期
+    type: date
+    description: 修改文章时选择今天的日期。
+    options:
+      format: yyyy-MM-dd
+  - name: body
+    label: 正文
+    type: rich-text
+    required: true
+    description: 支持标题、列表、代码块和图片；复杂 Markdown 可切换到 Source 模式。
+    options:
+      format: markdown
+      switcher: true
+      media: article_images
+- name: architecture
+  label: 架构设计
+  type: collection
+  path: docs/architecture
+  format: yaml-frontmatter
+  subfolders: false
+  filename:
+    template: '{year}-{month}-{day}-{primary}.md'
+    field: create
+  view:
+    fields:
+    - title
+    - updated
+    - status
+    primary: title
+    sort:
+    - updated
+    - title
+    search:
+    - title
+    - description
+    - tags
+    default:
+      sort: updated
+      order: desc
+  fields:
+  - name: title
+    label: 文章标题
+    type: string
+    required: true
+  - name: description
+    label: 一句话摘要
+    type: text
+    required: true
+  - name: category
+    label: 分类
+    type: string
+    default: architecture
+    hidden: true
+  - name: tags
+    label: 标签
+    type: string
+    list: true
+  - name: status
+    label: 内容成熟度
+    type: select
+    default: draft
+    description: 用于标记笔记的成熟度；保存后会更新公开网站。
+    options:
+      values:
+      - name: draft
+        label: 整理中
+      - name: active
+        label: 持续更新
+      - name: stable
+        label: 已稳定
+      - name: deprecated
+        label: 已过时
+  - name: created
+    label: 创建日期
+    type: date
+    options:
+      format: yyyy-MM-dd
+  - name: updated
+    label: 更新日期
+    type: date
+    description: 修改文章时选择今天的日期。
+    options:
+      format: yyyy-MM-dd
+  - name: body
+    label: 正文
+    type: rich-text
+    required: true
+    description: 支持标题、列表、代码块和图片；复杂 Markdown 可切换到 Source 模式。
+    options:
+      format: markdown
+      switcher: true
+      media: article_images
+- name: projects
+  label: 项目实践
+  type: collection
+  path: docs/projects
+  format: yaml-frontmatter
+  subfolders: false
+  filename:
+    template: '{year}-{month}-{day}-{primary}.md'
+    field: create
+  view:
+    fields:
+    - title
+    - updated
+    - status
+    primary: title
+    sort:
+    - updated
+    - title
+    search:
+    - title
+    - description
+    - tags
+    default:
+      sort: updated
+      order: desc
+  fields:
+  - name: title
+    label: 文章标题
+    type: string
+    required: true
+  - name: description
+    label: 一句话摘要
+    type: text
+    required: true
+  - name: category
+    label: 分类
+    type: string
+    default: projects
+    hidden: true
+  - name: tags
+    label: 标签
+    type: string
+    list: true
+  - name: status
+    label: 内容成熟度
+    type: select
+    default: draft
+    description: 用于标记笔记的成熟度；保存后会更新公开网站。
+    options:
+      values:
+      - name: draft
+        label: 整理中
+      - name: active
+        label: 持续更新
+      - name: stable
+        label: 已稳定
+      - name: deprecated
+        label: 已过时
+  - name: created
+    label: 创建日期
+    type: date
+    options:
+      format: yyyy-MM-dd
+  - name: updated
+    label: 更新日期
+    type: date
+    description: 修改文章时选择今天的日期。
+    options:
+      format: yyyy-MM-dd
+  - name: body
+    label: 正文
+    type: rich-text
+    required: true
+    description: 支持标题、列表、代码块和图片；复杂 Markdown 可切换到 Source 模式。
+    options:
+      format: markdown
+      switcher: true
+      media: article_images
+- name: finance
+  label: 金融与投资
+  type: collection
+  path: docs/finance
+  format: yaml-frontmatter
+  subfolders: false
+  filename:
+    template: '{year}-{month}-{day}-{primary}.md'
+    field: create
+  view:
+    fields:
+    - title
+    - updated
+    - status
+    primary: title
+    sort:
+    - updated
+    - title
+    search:
+    - title
+    - description
+    - tags
+    default:
+      sort: updated
+      order: desc
+  fields:
+  - name: title
+    label: 文章标题
+    type: string
+    required: true
+  - name: description
+    label: 一句话摘要
+    type: text
+    required: true
+  - name: category
+    label: 分类
+    type: string
+    default: finance
+    hidden: true
+  - name: tags
+    label: 标签
+    type: string
+    list: true
+  - name: status
+    label: 内容成熟度
+    type: select
+    default: draft
+    description: 用于标记笔记的成熟度；保存后会更新公开网站。
+    options:
+      values:
+      - name: draft
+        label: 整理中
+      - name: active
+        label: 持续更新
+      - name: stable
+        label: 已稳定
+      - name: deprecated
+        label: 已过时
+  - name: created
+    label: 创建日期
+    type: date
+    options:
+      format: yyyy-MM-dd
+  - name: updated
+    label: 更新日期
+    type: date
+    description: 修改文章时选择今天的日期。
+    options:
+      format: yyyy-MM-dd
+  - name: body
+    label: 正文
+    type: rich-text
+    required: true
+    description: 支持标题、列表、代码块和图片；复杂 Markdown 可切换到 Source 模式。
+    options:
+      format: markdown
+      switcher: true
+      media: article_images
+- name: finance_handbook
+  label: 金融 · 基础手册
+  type: collection
+  path: docs/finance/handbook
+  format: yaml-frontmatter
+  subfolders: false
+  filename:
+    template: '{year}-{month}-{day}-{primary}.md'
+    field: create
+  view:
+    fields:
+    - title
+    - updated
+    - status
+    primary: title
+    sort:
+    - updated
+    - title
+    search:
+    - title
+    - description
+    - tags
+    default:
+      sort: updated
+      order: desc
+  fields:
+  - name: title
+    label: 文章标题
+    type: string
+    required: true
+  - name: description
+    label: 一句话摘要
+    type: text
+    required: true
+  - name: category
+    label: 分类
+    type: string
+    default: finance
+    hidden: true
+  - name: tags
+    label: 标签
+    type: string
+    list: true
+  - name: status
+    label: 内容成熟度
+    type: select
+    default: draft
+    description: 用于标记笔记的成熟度；保存后会更新公开网站。
+    options:
+      values:
+      - name: draft
+        label: 整理中
+      - name: active
+        label: 持续更新
+      - name: stable
+        label: 已稳定
+      - name: deprecated
+        label: 已过时
+  - name: created
+    label: 创建日期
+    type: date
+    options:
+      format: yyyy-MM-dd
+  - name: updated
+    label: 更新日期
+    type: date
+    description: 修改文章时选择今天的日期。
+    options:
+      format: yyyy-MM-dd
+  - name: body
+    label: 正文
+    type: rich-text
+    required: true
+    description: 支持标题、列表、代码块和图片；复杂 Markdown 可切换到 Source 模式。
+    options:
+      format: markdown
+      switcher: true
+      media: article_images_deep
+- name: finance_casebook
+  label: 金融 · 真实案例
+  type: collection
+  path: docs/finance/casebook
+  format: yaml-frontmatter
+  subfolders: false
+  filename:
+    template: '{year}-{month}-{day}-{primary}.md'
+    field: create
+  view:
+    fields:
+    - title
+    - updated
+    - status
+    primary: title
+    sort:
+    - updated
+    - title
+    search:
+    - title
+    - description
+    - tags
+    default:
+      sort: updated
+      order: desc
+  fields:
+  - name: title
+    label: 文章标题
+    type: string
+    required: true
+  - name: description
+    label: 一句话摘要
+    type: text
+    required: true
+  - name: category
+    label: 分类
+    type: string
+    default: finance
+    hidden: true
+  - name: tags
+    label: 标签
+    type: string
+    list: true
+  - name: status
+    label: 内容成熟度
+    type: select
+    default: draft
+    description: 用于标记笔记的成熟度；保存后会更新公开网站。
+    options:
+      values:
+      - name: draft
+        label: 整理中
+      - name: active
+        label: 持续更新
+      - name: stable
+        label: 已稳定
+      - name: deprecated
+        label: 已过时
+  - name: created
+    label: 创建日期
+    type: date
+    options:
+      format: yyyy-MM-dd
+  - name: updated
+    label: 更新日期
+    type: date
+    description: 修改文章时选择今天的日期。
+    options:
+      format: yyyy-MM-dd
+  - name: body
+    label: 正文
+    type: rich-text
+    required: true
+    description: 支持标题、列表、代码块和图片；复杂 Markdown 可切换到 Source 模式。
+    options:
+      format: markdown
+      switcher: true
+      media: article_images_deep
+- name: finance_foundations-48-day
+  label: 金融 · 48 天学习
+  type: collection
+  path: docs/finance/foundations-48-day
+  format: yaml-frontmatter
+  subfolders: false
+  filename:
+    template: '{year}-{month}-{day}-{primary}.md'
+    field: create
+  view:
+    fields:
+    - title
+    - updated
+    - status
+    primary: title
+    sort:
+    - updated
+    - title
+    search:
+    - title
+    - description
+    - tags
+    default:
+      sort: updated
+      order: desc
+  fields:
+  - name: title
+    label: 文章标题
+    type: string
+    required: true
+  - name: description
+    label: 一句话摘要
+    type: text
+    required: true
+  - name: category
+    label: 分类
+    type: string
+    default: finance
+    hidden: true
+  - name: tags
+    label: 标签
+    type: string
+    list: true
+  - name: status
+    label: 内容成熟度
+    type: select
+    default: draft
+    description: 用于标记笔记的成熟度；保存后会更新公开网站。
+    options:
+      values:
+      - name: draft
+        label: 整理中
+      - name: active
+        label: 持续更新
+      - name: stable
+        label: 已稳定
+      - name: deprecated
+        label: 已过时
+  - name: created
+    label: 创建日期
+    type: date
+    options:
+      format: yyyy-MM-dd
+  - name: updated
+    label: 更新日期
+    type: date
+    description: 修改文章时选择今天的日期。
+    options:
+      format: yyyy-MM-dd
+  - name: body
+    label: 正文
+    type: rich-text
+    required: true
+    description: 支持标题、列表、代码块和图片；复杂 Markdown 可切换到 Source 模式。
+    options:
+      format: markdown
+      switcher: true
+      media: article_images_deep
+- name: finance_templates
+  label: 金融 · 研究模板
+  type: collection
+  path: docs/finance/templates
+  format: yaml-frontmatter
+  subfolders: false
+  filename:
+    template: '{year}-{month}-{day}-{primary}.md'
+    field: create
+  view:
+    fields:
+    - title
+    - updated
+    - status
+    primary: title
+    sort:
+    - updated
+    - title
+    search:
+    - title
+    - description
+    - tags
+    default:
+      sort: updated
+      order: desc
+  fields:
+  - name: title
+    label: 文章标题
+    type: string
+    required: true
+  - name: description
+    label: 一句话摘要
+    type: text
+    required: true
+  - name: category
+    label: 分类
+    type: string
+    default: finance
+    hidden: true
+  - name: tags
+    label: 标签
+    type: string
+    list: true
+  - name: status
+    label: 内容成熟度
+    type: select
+    default: draft
+    description: 用于标记笔记的成熟度；保存后会更新公开网站。
+    options:
+      values:
+      - name: draft
+        label: 整理中
+      - name: active
+        label: 持续更新
+      - name: stable
+        label: 已稳定
+      - name: deprecated
+        label: 已过时
+  - name: created
+    label: 创建日期
+    type: date
+    options:
+      format: yyyy-MM-dd
+  - name: updated
+    label: 更新日期
+    type: date
+    description: 修改文章时选择今天的日期。
+    options:
+      format: yyyy-MM-dd
+  - name: body
+    label: 正文
+    type: rich-text
+    required: true
+    description: 支持标题、列表、代码块和图片；复杂 Markdown 可切换到 Source 模式。
+    options:
+      format: markdown
+      switcher: true
+      media: article_images_deep

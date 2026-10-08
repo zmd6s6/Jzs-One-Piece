@@ -44,11 +44,31 @@ export default defineConfig({
   base: '/Jzs-One-Piece/',
   srcExclude: ['AGENTS.md', 'templates/**', 'assets/README.md'],
   lastUpdated: true,
+  markdown: {
+    config(md) {
+      // CMS authors enter the title separately from the body. Preserve existing H1s.
+      md.core.ruler.after('block', 'cms-title', state => {
+        const { title, layout } = state.env.frontmatter || {}
+        if (!title || layout === 'home' || state.tokens.some(token => token.type === 'heading_open' && token.tag === 'h1')) return
+        const opening = new state.Token('heading_open', 'h1', 1)
+        opening.map = [0, 0]
+        opening.markup = '#'
+        const inline = new state.Token('inline', '', 0)
+        inline.content = String(title)
+        inline.children = []
+        inline.level = 1
+        const closing = new state.Token('heading_close', 'h1', -1)
+        closing.markup = '#'
+        state.tokens.unshift(opening, inline, closing)
+      })
+    }
+  },
   themeConfig: {
     nav: [
       { text: '知识地图', link: '/docs/README' },
       { text: '金融手册', link: '/docs/finance/handbook/README' },
       { text: '48 天学习', link: '/docs/finance/foundations-48-day/README' },
+      { text: '写文章', link: 'https://app.pagescms.org' },
       { text: 'GitHub', link: 'https://github.com/zmd6s6/Jzs-One-Piece' }
     ],
     sidebar: domains.map(([directory, text]) => ({ text, collapsed: directory !== 'finance', items: items(`docs/${directory}`) })),
