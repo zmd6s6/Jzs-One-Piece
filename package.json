@@ -1,0 +1,14 @@
+{
+  "name": "jzs-one-piece",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "docs:dev": "node scripts/prepare-site.mjs && vitepress dev .",
+    "docs:build": "node scripts/prepare-site.mjs && vitepress build .",
+    "docs:preview": "vitepress preview ."
+  },
+  "devDependencies": {
+    "gray-matter": "4.0.3",
+    "vitepress": "1.6.4"
+  }
+}

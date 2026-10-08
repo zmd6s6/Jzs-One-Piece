@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/jzs-one-piece-banner.webp" alt="Jzs-One-Piece" width="100%" />
+  <img src="./assets/jzs-one-piece-banner.webp" alt="Jzs-One-Piece" width="100%" />
 </p>
 
 # Jzs-One-Piece
@@ -12,9 +12,31 @@
 
 - 内容以 Markdown 为唯一事实来源（Single Source of Truth）
 - Git 负责版本管理与知识演进
-- 后续可由 VitePress 构建为独立知识网站
-- 后续可接入全文搜索、Embedding、RAG、MCP / Agent
+- 由 VitePress 构建为在线知识网站
+- 内置全文搜索，后续可接入 Embedding、RAG、MCP / Agent
 - AI 可以协助整理、补充、审阅知识，但知识结构保持稳定、可迁移
+
+## 在线阅读与本地预览
+
+访问地址：[Jzs-One-Piece 在线知识库](https://zmd6s6.github.io/Jzs-One-Piece/)。首次发布需在仓库 **Settings → Pages → Build and deployment → Source** 选择 **GitHub Actions**，并确认 [部署工作流](https://github.com/zmd6s6/Jzs-One-Piece/actions/workflows/pages.yml) 成功后访问。
+
+网站包含分类导航、文档全文搜索、页内目录和金融学习入口。导航从 `docs/` 目录及 Markdown 标题自动生成；新增文档无需手动维护侧边栏。原有 Markdown 路径保持不变。
+
+本地使用 Node.js 22：
+
+```bash
+npm ci
+npm run docs:dev
+```
+
+构建和检查生产版本：
+
+```bash
+npm run docs:build
+npm run docs:preview
+```
+
+推送到 `main` 会自动构建并发布；PR 只验证构建。生成文件在 `.vitepress/dist/`，不提交到仓库。正文继续以 `docs/` 为准，前端配置放在 `.vitepress/`，无需租云服务器。
 
 ## Knowledge Map
 
@@ -99,15 +121,15 @@ updated: 2026-09-20
 
 ### Phase 2 — Knowledge Website
 
-- [ ] 接入 VitePress
-- [ ] 自动生成导航与侧边栏
-- [ ] GitHub Actions 自动构建
+- [x] 接入 VitePress
+- [x] 自动生成导航与侧边栏
+- [x] GitHub Actions 自动构建
 - [ ] GitHub Pages / Cloudflare Pages 部署
 - [ ] 自定义域名
 
 ### Phase 3 — Search & AI
 
-- [ ] 全文搜索
+- [x] 全文搜索
 - [ ] 文档索引
 - [ ] Embedding / Vector Store
 - [ ] RAG 问答
