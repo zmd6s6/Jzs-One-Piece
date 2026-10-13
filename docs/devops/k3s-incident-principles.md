@@ -228,7 +228,7 @@ L6 应用层        health 组端点、错误日志聚合（sort | uniq -c）
 
 ## Related
 
-- [templates/knowledge-note.md](../../templates/knowledge-note.md)
+- 本仓 `templates/knowledge-note.md`（知识笔记模板）
 
 ## References
 
