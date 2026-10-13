@@ -228,7 +228,8 @@ L6 应用层        health 组端点、错误日志聚合（sort | uniq -c）
 
 ## Related
 
-- 本仓 `templates/knowledge-note.md`（知识笔记模板）
+- [K3s 体系选型决策记录（ADR）](./k3s-decision-records.md)
+- [K3s/K8s 组件原理篇](./k3s-internals.md)
 
 ## References
 
