@@ -14,7 +14,7 @@ updated: 2026-10-13
 
 # K3s/K8s 组件原理篇：从进程到请求的机制地图
 
-> 配套阅读：[事故与踩坑复盘](./k3s-incident-principles.md)（这些原理对应的翻车现场）、[选型决策记录](./k3s-decision-records.md)。
+> 名词不熟先查：[术语表](./k8s-glossary.md)。配套阅读：[事故与踩坑复盘](./k3s-incident-principles.md)、[选型决策记录](./k3s-decision-records.md)。
 > 目标：每个机制讲清"它替你做了什么、在哪儿会坏、坏了长什么样"。
 
 ## 1. k3s 到底打包了什么
@@ -43,7 +43,7 @@ agent（server 也内嵌 agent）:
 - 坏了什么样：跨节点 Pod 互访**超时**（不是 refused）——即使节点互相 ping 通、防火墙关着，**中间网络设备挡 UDP 8472** 照样断；
 - 这就是"双节点引入新问题域"的实体：跨节点不通时，同节点 Pod 正常、跨节点全断，症状极具迷惑性。
 
-### 2.3 Service / ClusterIP：kube-proxy 的 iptables 魔术
+### 2.3 Service / ClusterIP：kube-proxy 与 iptables 的转发机制
 
 - ClusterIP 是**虚拟 IP**，没有任何网卡持有它；本机发出的包被 iptables `KUBE-SERVICES` 链 DNAT 成某个 Pod IP；
 - 推论一：**节点本身也能访问 ClusterIP**（iptables 对本机流量同样生效）——排障时不用进 Pod，节点上直接 `curl <ClusterIP>:<port>`；
@@ -57,7 +57,7 @@ agent（server 也内嵌 agent）:
 全部在本节点 iptables 完成（后端 Pod 在别的节点时才走 flannel 封装）
 ```
 
-## 3. DNS 链路：Pod 里一个名字的解析之旅
+## 3. DNS 链路：Pod 内一次解析的过程
 
 - Pod 的 `/etc/resolv.conf`：`nameserver 10.43.0.10`（CoreDNS 的 Service）+ `search <ns>.svc.cluster.local svc.cluster.local cluster.local` + **`ndots:5`**；
 - `ndots:5` 的含义：名字里点数 <5 会先拼 search 域逐个试——所以短名（`dbsvr`）能解析，也会带来"多次查询"的隐性成本；
@@ -65,7 +65,7 @@ agent（server 也内嵌 agent）:
 - ExternalName 的 DNS 语义：只回 CNAME。**CNAME 的目标必须是个可解析的名字**——目标是 IP 字面量时无法合成 A 记录 → 整体 NXDOMAIN。这就是"ExternalName 指 IP 是死路"的原理级原因；
 - 正解 headless Service（clusterIP=None）+ 同名 Endpoints：CoreDNS 对 headless 服务直接回**后端 Pod/手工 Endpoints 的 A 记录**，任何客户端都认。
 
-## 4. 存储：local-path 的真相
+## 4. 存储：local-path 的工作方式
 
 - 原理：PV 就是**节点上某目录**（provisioner 收到 PVC → 在调度节点建目录 → hostPath 挂进 Pod）；
 - 推论：**数据绑死节点**——Pod 重调度到另一节点 = 拿到新空目录（数据没丢，在原节点躺着）；StatefulSet + volumeClaimTemplates 的"每副本独立 PVC"只是让这个事实更明确；
@@ -117,5 +117,7 @@ agent（server 也内嵌 agent）:
 
 ## Related
 
+- [Kubernetes / 容器交付 术语表](./k8s-glossary.md)
 - [K3s 实战事故与原理](./k3s-incident-principles.md)
 - [K3s 体系选型决策记录](./k3s-decision-records.md)
+- [实践项目：容器化交付体系的搭建](../projects/medical-it-delivery-practice/README.md)

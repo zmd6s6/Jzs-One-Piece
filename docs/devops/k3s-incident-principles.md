@@ -16,8 +16,8 @@ updated: 2026-10-13
 
 # K3s 双集群实战知识库：事故、原理与纪律
 
-> 来源：两个月内从零搭建 K3s 测试/生产双集群 + 发版流水线的实战复盘。
-> 收录标准：**① 有通用原理价值 ② 复发概率高 ③ 根因一句话能讲清**。项目细节已脱敏（gateway / platform / pacs 泛指三类 JVM 服务：网关、平台、影像处理）。
+> 来源：一次轻量集群与交付体系的搭建过程。名词不熟先查[术语表](./k8s-glossary.md)；背景与取舍见[选型决策记录](./k3s-decision-records.md)。
+> 记录标准：根因一句能说清、易于复发、有通用价值。文中服务名已脱敏（gateway / platform / pacs 泛指三类 JVM 服务：网关、平台、影像处理）。
 
 ## 0. 全景：所有事故都落在三条主线上
 
@@ -64,7 +64,7 @@ JVM 总占用 = 堆(-Xmx) + Metaspace + 堆外(direct memory，Netty 类框架�
 
 ---
 
-## 二、镜像布局与启动方式：一起最经典的启动崩溃
+## 二、镜像布局与启动方式：一次容器启动失败的分析
 
 ### 2.1 原理：Spring Boot 应用的三种产物形态
 
@@ -72,15 +72,15 @@ JVM 总占用 = 堆(-Xmx) + Metaspace + 堆外(direct memory，Netty 类框架�
 |---|---|---|---|
 | fat jar | Main-Class=JarLauncher，依赖嵌在 jar 内 | ✅ | 单文件大产物 |
 | thin jar（NONE 布局） | Main-Class=业务主类 + `Class-Path: lib/xxx.jar...` 清单 | ✅（靠 manifest Class-Path） | 依赖在旁边 lib/ |
-| thin jar（ZIP 布局） | Main-Class=**PropertiesLauncher** | ❌（必须 `-Dloader.path=./lib` 指路） | 裸 `java -jar` 一个依赖都加载不到 |
+| thin jar（ZIP 布局） | Main-Class=**PropertiesLauncher** | 启动失败（必须用 `-Dloader.path=./lib` 指路） | 裸 `java -jar` 时依赖一个都加载不到 |
 
-**兼容矩阵**（一张表看懂所有组合）：
+**兼容矩阵**（同一份薄 jar 配合不同启动方式的结果；如何取舍见 [ADR 第 4 节](./k3s-decision-records.md)）：
 
 | 启动方式 ＼ 布局 | NONE | ZIP |
 |---|---|---|
 | `java -cp 'app.jar:lib/*' 主类` | ✅ | ✅（布局免疫） |
 | `java -Dloader.path=./lib -jar` | ✅ | ✅ |
-| 裸 `java -jar` | ⚠️ 侥幸能跑 | ❌ 必炸 |
+| 裸 `java -jar` | 能跑 | 启动失败 |
 
 ### 2.2 事故：CI 里内联的 Dockerfile
 
@@ -94,7 +94,7 @@ JVM 总占用 = 堆(-Xmx) + Metaspace + 堆外(direct memory，Netty 类框架�
 
 ---
 
-## 三、无 Registry 的镜像分发：最贵的运维坑
+## 三、无 Registry 的镜像分发
 
 ### 3.1 原理
 
@@ -172,7 +172,7 @@ subsets:
 
 ## 七、CI/CD 与版本纪律
 
-### 7.1 最隐蔽的一起：CI 从"另一个仓库"构建了两个月
+### 7.1 一起不易察觉的案例：CI 从另一个同名仓库构建
 
 - **现象**：发版产物版本号与源码仓 HEAD 对不上；
 - **根因**：CI 里源码 URL 的 group 路径写错，但那个错误路径**真实存在另一个旧副本仓库**（HTTP 200 可达 ≠ 是同一个仓）；新旧两仓同名，构建一切正常；
@@ -228,8 +228,10 @@ L6 应用层        health 组端点、错误日志聚合（sort | uniq -c）
 
 ## Related
 
+- [Kubernetes / 容器交付 术语表](./k8s-glossary.md)
 - [K3s 体系选型决策记录（ADR）](./k3s-decision-records.md)
 - [K3s/K8s 组件原理篇](./k3s-internals.md)
+- [实践项目：容器化交付体系的搭建](../projects/medical-it-delivery-practice/README.md)
 
 ## References
 
