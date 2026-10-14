@@ -1,5 +1,6 @@
 ---
 title: NAT 与端口转发：公司总机是怎么工作的
+author: zmd6s6
 description: 用"前台总机"的类比讲清 NAT、DNAT、端口转发——Kubernetes 的 Service/NodePort 用的正是这套机制。
 category: networking
 tags:
@@ -43,3 +44,9 @@ Kubernetes 把这套机制用到了极致，理解 NAT 就能秒懂 K8s 网络�
 
 - [K3s 原理篇：Service / ClusterIP / NodePort](../devops/k3s-internals.md)——ClusterIP 就是"总机号"（虚拟 IP + iptables DNAT 规则），NodePort 就是"拨总机转 30000+"；
 - [K3s 事故复盘](../devops/k3s-incident-principles.md)——"ClusterIP 从节点上也能访问"正是规则的生效范围决定的。
+
+## 修订记录
+
+| 日期 | 作者 | 变更 |
+|---|---|---|
+| 2026-10-14 | zmd6s6（AI 辅助） | 创建（含基础知识串联） |

@@ -1,5 +1,6 @@
 ---
 title: classpath 白话：Java 是怎么找到类的
+author: zmd6s6
 description: 用"借书清单"的类比讲清 classpath、jar 包的 MANIFEST、java -cp 与 java -jar 的区别——理解这个能解释所有 NoClassDefFoundError 类启动失败。
 category: backend
 tags:
@@ -62,3 +63,9 @@ Spring Boot（Java 最常用的应用框架）打薄包时有两种附言写法�
 
 - [K3s 事故复盘：一次容器启动失败的剖析](../devops/k3s-incident-principles.md)——裸机启动脚本带了 `-Dloader.path`、容器入口漏抄了这一句的真实案例；
 - [K3s 选型记录第 4 条](../devops/k3s-decision-records.md)——为什么最终统一用 `java -cp '/app/*:/app/lib/*'`（对任何布局免疫）。
+
+## 修订记录
+
+| 日期 | 作者 | 变更 |
+|---|---|---|
+| 2026-10-14 | zmd6s6（AI 辅助） | 创建（含基础知识串联） |

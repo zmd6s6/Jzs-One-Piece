@@ -1,5 +1,6 @@
 ---
 title: K3s 体系选型决策记录（ADR）
+author: zmd6s6
 description: 搭建轻量集群与交付体系时的 12 组选型：每个候选方案的适用条件、优点、代价，以及本项目实际的选择与原因。
 category: devops
 tags:
@@ -166,3 +167,10 @@ updated: 2026-10-13
 - [K3s 实战事故与原理](./k3s-incident-principles.md)
 - [K3s/K8s 组件原理篇](./k3s-internals.md)
 - [实践项目：某医疗信息化产品线的容器化交付](../projects/medical-it-delivery-practice/README.md)
+
+## 修订记录
+
+| 日期 | 作者 | 变更 |
+|---|---|---|
+| 2026-10-13 | zmd6s6（AI 辅助） | 创建 |
+| 2026-10-14 | zmd6s6（AI 辅助） | 按小白视角重写并串联基础知识域 |

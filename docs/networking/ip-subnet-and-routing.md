@@ -1,5 +1,6 @@
 ---
 title: IP、子网与路由：为什么 ping 得通 A 却连不上 B
+author: zmd6s6
 description: 用"小区门牌 + 大门 + 导航"的类比讲清 IP 地址、子网掩码、网关和路由表——理解它们才能排查"某个网段不通"的问题。
 category: networking
 tags:
@@ -56,3 +57,9 @@ updated: 2026-10-14
 
 - [K3s 事故复盘：跨网段网络中断排查](../devops/k3s-incident-principles.md)——"构建前半段还通、上传阶段断了"的定位过程；
 - [项目实践：轻量集群交付](../projects/medical-it-delivery-practice/README.md)——"机器少、网段隔离"这些约束如何影响方案选型。
+
+## 修订记录
+
+| 日期 | 作者 | 变更 |
+|---|---|---|
+| 2026-10-14 | zmd6s6（AI 辅助） | 创建（含基础知识串联） |

@@ -1,5 +1,6 @@
 ---
 title: JVM 内存白话：堆、元空间、堆外到底是什么
+author: zmd6s6
 description: 用"厨房"的类比讲清 Java 程序的三块内存——堆、Metaspace、堆外内存，以及容器内存限制为什么管的是总和。理解这个能解释所有"内存够了却 OOM"的怪事。
 category: backend
 tags:
@@ -49,3 +50,9 @@ Java 虚拟机（JVM，运行 Java 程序的"引擎"）向操作系统要的内�
 
 - [K3s 事故复盘：三起 OOM 的完整谱系](../devops/k3s-incident-principles.md)——堆超限被杀 437 次、元空间被 192m 封死、默认参数贴脸跑，三个真实案例对应本文三块内存；
 - [K3s 选型记录第 9 条](../devops/k3s-decision-records.md)——"显式数值 vs 百分比"两种配法的取舍。
+
+## 修订记录
+
+| 日期 | 作者 | 变更 |
+|---|---|---|
+| 2026-10-14 | zmd6s6（AI 辅助） | 创建（含基础知识串联） |

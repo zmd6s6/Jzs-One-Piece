@@ -1,5 +1,6 @@
 ---
 title: 端口、"拒绝"与"超时"：一次连通性测试教你的事
+author: zmd6s6
 description: 用"敲门"的类比讲清 TCP 端口、connection refused 与 timeout 的本质区别——这是排障时最有价值的一个判据。
 category: networking
 tags:
@@ -65,3 +66,9 @@ nc -zv -w 3 192.168.1.10 1521
 
 - [K3s 事故复盘：现场服务注册失败导致启动中断](../devops/k3s-incident-principles.md)——"8848 通不代表 9848 通"的完整案例；
 - [K3s 原理篇的排障速查表](../devops/k3s-internals.md)——"refused vs timeout"作为第一判据的使用方式。
+
+## 修订记录
+
+| 日期 | 作者 | 变更 |
+|---|---|---|
+| 2026-10-14 | zmd6s6（AI 辅助） | 创建（含基础知识串联） |

@@ -44,3 +44,9 @@ If this page records a design decision, explain alternatives and why the selecte
 ## References
 
 - Add authoritative external references when necessary.
+
+## 修订记录
+
+| 日期 | 作者 | 变更 |
+|---|---|---|
+| YYYY-MM-DD | your-name | 创建 |

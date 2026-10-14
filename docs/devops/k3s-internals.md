@@ -1,5 +1,6 @@
 ---
 title: K3s 原理篇：一次请求的完整旅程
+author: zmd6s6
 description: 以小白视角讲清 K3s/Kubernetes 的工作机制：集群是什么、一个请求从进门到到达容器的每一步（NodePort→虚拟地址→跨节点隧道）、集群内 DNS、存储、镜像与启动——每一步链接对应的基础知识笔记。
 category: devops
 tags:
@@ -105,3 +106,10 @@ Spring Boot 程序在 K8s 里默认提供分组地址（`/actuator/health/livene
 
 - [事故复盘](./k3s-incident-principles.md) ｜ [选型决策记录](./k3s-decision-records.md) ｜ [术语表](./k8s-glossary.md) ｜ [项目实践](../projects/medical-it-delivery-practice/README.md)
 - 基础底座：[DNS](../networking/dns-name-to-address.md) ｜ [拒绝 vs 超时](../networking/tcp-udp-refused-vs-timeout.md) ｜ [子网路由](../networking/ip-subnet-and-routing.md) ｜ [NAT](../networking/nat-and-port-forward.md) ｜ [JVM 内存](../backend/jvm-memory-anatomy.md) ｜ [classpath](../backend/java-classpath-basics.md)
+
+## 修订记录
+
+| 日期 | 作者 | 变更 |
+|---|---|---|
+| 2026-10-13 | zmd6s6（AI 辅助） | 创建 |
+| 2026-10-14 | zmd6s6（AI 辅助） | 按小白视角重写并串联基础知识域 |

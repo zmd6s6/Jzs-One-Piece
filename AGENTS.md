@@ -111,6 +111,12 @@ Do not force empty sections into every document.
 - 实践文章在用到的地方链接过去（"要看懂这一步，先理解 X → 链接"）；基础笔记末尾用"实战应用"小节链接回实践案例，形成双向网。
 - 不允许在实践文章里内联展开大段底层原理（那属于基础域笔记），也不允许基础笔记依赖某个具体项目才能读懂。
 
+### 4. 作者与修订记录（溯源要求）
+
+- front matter 必须包含 `author:`（知识所有者，填人名/ID；AI 代笔的在修订记录中注明"AI 辅助"）。
+- 每篇文档结尾必须有 `## 修订记录` 表（`| 日期 | 作者 | 变更 |`）；**每次实质性修改追加一行**，只增不改。
+- `created` / `updated` 与修订记录保持一致；纯改错字可不记，动了知识内容必须记。
+
 ## Architecture Decision Records
 
 For important technical decisions, include:

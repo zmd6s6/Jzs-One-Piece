@@ -1,5 +1,6 @@
 ---
 title: Oracle 名字解析、同义词与权限："表不存在"的两种含义
+author: zmd6s6
 description: 一次现场事故的完整复盘：同一条 SQL 手动执行正常、程序却报"表或视图不存在"——最终根因是权限缺失。讲解 Oracle 按连接账号解析表名、同义词机制，以及 ORA-00942 的双重含义。
 category: backend
 tags:
@@ -67,3 +68,9 @@ GRANT SELECT ON 表属主.表名 TO 程序账号;
 
 - [DNS：名字是怎么变成地址的](../networking/dns-name-to-address.md)——同样是"名字→实体"的解析问题，DNS 按"谁在查"逐级问路，Oracle 按"谁在连"解析表名，两者同构；
 - [K3s 术语表](../devops/k8s-glossary.md)——本文的"思考链路"方法在容器排障中的对应（L0-L6 分层漏斗）。
+
+## 修订记录
+
+| 日期 | 作者 | 变更 |
+|---|---|---|
+| 2026-10-14 | zmd6s6（AI 辅助） | 创建（含基础知识串联） |

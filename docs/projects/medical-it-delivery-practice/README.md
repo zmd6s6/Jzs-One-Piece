@@ -1,5 +1,6 @@
 ---
 title: 实践项目：轻量集群交付体系的搭建（某医疗信息化产品线）
+author: zmd6s6
 description: 一次真实的从零搭建记录：在机器少、断网、无专职运维的约束下，用 k3s 搭建测试与交付环境，并建立镜像、配置、发布与排障的一套做法。含当时的妥协、遗留问题与复盘。
 category: projects
 tags:
@@ -96,3 +97,10 @@ updated: 2026-10-13
 - [K3s 实战事故与原理](../../devops/k3s-incident-principles.md)
 - [K3s 体系选型决策记录（ADR）](../../devops/k3s-decision-records.md)
 - [K3s/K8s 组件原理篇](../../devops/k3s-internals.md)
+
+## 修订记录
+
+| 日期 | 作者 | 变更 |
+|---|---|---|
+| 2026-10-13 | zmd6s6（AI 辅助） | 创建 |
+| 2026-10-14 | zmd6s6（AI 辅助） | 按小白视角重写并串联基础知识域 |

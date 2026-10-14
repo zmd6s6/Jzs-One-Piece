@@ -1,5 +1,6 @@
 ---
 title: DNS：名字是怎么变成地址的
+author: zmd6s6
 description: 从"浏览器输入网址后发生了什么"讲起，白话解释 DNS、A 记录、CNAME、缓存与负缓存——理解它们能解释一半的"连不上"问题。
 category: networking
 tags:
@@ -57,3 +58,9 @@ updated: 2026-10-14
 ## References
 
 - RFC 1034 / 1035（DNS 的原始定义，进阶阅读）
+
+## 修订记录
+
+| 日期 | 作者 | 变更 |
+|---|---|---|
+| 2026-10-14 | zmd6s6（AI 辅助） | 创建（含基础知识串联） |

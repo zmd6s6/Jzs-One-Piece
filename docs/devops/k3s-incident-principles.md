@@ -1,5 +1,6 @@
 ---
 title: K3s 事故复盘：现象、推理与根因
+author: zmd6s6
 description: 搭建轻量集群与交付体系过程中真实发生的事故复盘：每条按"现象→排查推理→根因→修复→预防"展开，术语均有白话解释并链接基础知识笔记。
 category: devops
 tags:
@@ -188,3 +189,10 @@ subsets:
 
 - [术语表](./k8s-glossary.md) ｜ [选型决策记录](./k3s-decision-records.md) ｜ [组件原理篇](./k3s-internals.md) ｜ [项目实践](../projects/medical-it-delivery-practice/README.md)
 - 基础底座：[DNS](../networking/dns-name-to-address.md) ｜ [拒绝 vs 超时](../networking/tcp-udp-refused-vs-timeout.md) ｜ [子网路由](../networking/ip-subnet-and-routing.md) ｜ [NAT](../networking/nat-and-port-forward.md) ｜ [JVM 内存](../backend/jvm-memory-anatomy.md) ｜ [classpath](../backend/java-classpath-basics.md)
+
+## 修订记录
+
+| 日期 | 作者 | 变更 |
+|---|---|---|
+| 2026-10-13 | zmd6s6（AI 辅助） | 创建 |
+| 2026-10-14 | zmd6s6（AI 辅助） | 按小白视角重写并串联基础知识域 |
