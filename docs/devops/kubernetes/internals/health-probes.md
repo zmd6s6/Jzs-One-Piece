@@ -28,7 +28,7 @@ Spring Boot 程序有两种健康地址：
 - `/actuator/health`——**综合报告**：汇总数据库、注册中心等所有依赖的状态，**任何一个坏就是失败**；
 - `/actuator/health/liveness` 和 `/readiness`——**分组端点**：只回答进程本身的状态，不掺外部依赖（Spring Boot 在 K8s 环境默认提供）。
 
-探针打综合报告 = 把"进程死活"的判决权交给了外部依赖——依赖抖一下，所有副本被轮流杀一遍（完整案例见[探针杀容器事故](../incidents/probe-kills-healthy-container.md)）。
+探针打综合报告 = 把"进程死活"的判决权交给了外部依赖——依赖抖一下，所有副本被轮流杀一遍（完整案例见[探针杀容器事故](../../../projects/medical-platform/incidents/probe-kills-healthy-container.md)）。
 
 ## 慢启动：用 startupProbe，别调大延迟
 
@@ -42,4 +42,4 @@ Java 服务冷启动可达数分钟。正确做法是 `startupProbe`（period ×
 
 | 日期 | 作者 | 变更 |
 |---|---|---|
-| 2026-10-14 | zmd6s6（AI 辅助） | 从《原理篇》长文拆分独立成篇 |
+| 2026-10-14 | zmd6s6 | 从《原理篇》长文拆分独立成篇 |

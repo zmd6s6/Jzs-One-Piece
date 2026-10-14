@@ -22,14 +22,14 @@ updated: 2026-10-14
 2. **按名字合并**：差异页改容器按容器名、改环境变量按变量名——**同名覆盖、异名追加**，不会误伤既有项；
 3. **目录引用限制**：差异页不能引用自己目录之外的**单个文件**（防路径逃逸）——要引用整个目录，或把文件复制进来。
 
-选型对比（vs Helm / sed 改文件）见[选型：运行时与配置](../decisions/runtime-and-config.md)。
+选型对比（vs Helm / sed 改文件）见[选型：运行时与配置](../../../projects/medical-platform/decisions/runtime-and-config.md)。
 
 ## 挂载：配置怎么进容器、为什么不热更新
 
-配置（ConfigMap）进容器有整目录挂载和**单文件挂载（subPath）**两种。后者**不跟随源更新**——这就是[改配置不生效事故](../incidents/config-not-hot-reloaded.md)的根源。操作铁律：**改配置 → 重启服务 → 验证** 三连。
+配置（ConfigMap）进容器有整目录挂载和**单文件挂载（subPath）**两种。后者**不跟随源更新**——这就是[改配置不生效事故](../../../projects/medical-platform/incidents/config-not-hot-reloaded.md)的根源。操作铁律：**改配置 → 重启服务 → 验证** 三连。
 
 ## 修订记录
 
 | 日期 | 作者 | 变更 |
 |---|---|---|
-| 2026-10-14 | zmd6s6（AI 辅助） | 从《原理篇》长文拆分独立成篇 |
+| 2026-10-14 | zmd6s6 | 从《原理篇》长文拆分独立成篇 |

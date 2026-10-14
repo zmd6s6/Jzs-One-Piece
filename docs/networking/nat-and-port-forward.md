@@ -43,10 +43,10 @@ iptables -t nat -L -n | head -20
 Kubernetes 把这套机制用到了极致，理解 NAT 就能秒懂 K8s 网络的一半：
 
 - [一次请求的完整旅程](../devops/kubernetes/internals/request-journey.md)——ClusterIP 就是"总机号"（虚拟 IP + iptables DNAT 规则），NodePort 就是"拨总机转 30000+"；
-- [事故复盘](../devops/kubernetes/incidents/README.md)——"ClusterIP 从节点上也能访问"正是规则的生效范围决定的。
+- [事故复盘](../projects/medical-platform/incidents/README.md)——"ClusterIP 从节点上也能访问"正是规则的生效范围决定的。
 
 ## 修订记录
 
 | 日期 | 作者 | 变更 |
 |---|---|---|
-| 2026-10-14 | zmd6s6（AI 辅助） | 创建（含基础知识串联） |
+| 2026-10-14 | zmd6s6 | 创建（含基础知识串联） |

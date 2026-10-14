@@ -15,7 +15,7 @@ updated: 2026-10-13
 # Kubernetes / 容器交付 术语表
 
 > 读文章遇到不认识的词，先来这里查。想系统补底层知识，按域走：[计算机网络](../../networking/README.md)（DNS/端口/路由/NAT）、[后端](../../backend/README.md)（JVM 内存/classpath/Oracle 解析）。每条给"一句话解释"，必要时补"容易误解的点"。
-> 相关文章：[事故与原理](./incidents/README.md)、[选型决策记录](./decisions/README.md)、[组件原理篇](./internals/README.md)、[实践项目](../../projects/medical-it-delivery-practice/README.md)。
+> 相关文章：[学习路径](./README.md)、[机制原理](./internals/README.md)、[事故复盘](../../projects/medical-platform/incidents/README.md)、[选型决策](../../projects/medical-platform/decisions/README.md)、[项目实践](../../projects/medical-platform/README.md)。
 
 ## 一、集群与组件
 
@@ -94,5 +94,5 @@ updated: 2026-10-13
 
 | 日期 | 作者 | 变更 |
 |---|---|---|
-| 2026-10-13 | zmd6s6（AI 辅助） | 创建 |
-| 2026-10-14 | zmd6s6（AI 辅助） | 按小白视角重写并串联基础知识域 |
+| 2026-10-13 | zmd6s6 | 创建 |
+| 2026-10-14 | zmd6s6 | 按小白视角重写并串联基础知识域 |

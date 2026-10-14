@@ -51,7 +51,7 @@ updated: 2026-10-14
 
 ## 实战应用
 
-- [ExternalName 指向 IP 为什么是死路](../devops/kubernetes/incidents/externalname-to-ip-nxdomain.md)——CNAME 的目标必须是个"名字"，写 IP 字面量时无法变成 A 记录，整体返回 NXDOMAIN；
+- [ExternalName 指向 IP 为什么是死路](../projects/medical-platform/incidents/externalname-to-ip-nxdomain.md)——CNAME 的目标必须是个"名字"，写 IP 字面量时无法变成 A 记录，整体返回 NXDOMAIN；
 - 同一篇里的"CoreDNS 负缓存 30 秒"案例——改完名字源立刻测试导致的误判；
 - [集群内的 DNS](../devops/kubernetes/internals/in-cluster-dns.md)——集群内部这一套是怎么跑的。
 
@@ -63,4 +63,4 @@ updated: 2026-10-14
 
 | 日期 | 作者 | 变更 |
 |---|---|---|
-| 2026-10-14 | zmd6s6（AI 辅助） | 创建（含基础知识串联） |
+| 2026-10-14 | zmd6s6 | 创建（含基础知识串联） |

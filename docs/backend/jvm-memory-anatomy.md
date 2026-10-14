@@ -48,11 +48,11 @@ Java 虚拟机（JVM，运行 Java 程序的"引擎"）向操作系统要的内�
 
 ## 实战应用
 
-- [三起 OOM 事故](../devops/kubernetes/incidents/container-killed-silently-oom.md)——堆超限被杀 437 次、元空间被 192m 封死、默认参数贴脸跑，三个真实案例对应本文三块内存；
-- [选型：运行时与配置](../devops/kubernetes/decisions/runtime-and-config.md)——"显式数值 vs 百分比"两种配法的取舍。
+- [三起 OOM 事故](../projects/medical-platform/incidents/container-killed-silently-oom.md)——堆超限被杀 437 次、元空间被 192m 封死、默认参数贴脸跑，三个真实案例对应本文三块内存；
+- [选型：运行时与配置](../projects/medical-platform/decisions/runtime-and-config.md)——"显式数值 vs 百分比"两种配法的取舍。
 
 ## 修订记录
 
 | 日期 | 作者 | 变更 |
 |---|---|---|
-| 2026-10-14 | zmd6s6（AI 辅助） | 创建（含基础知识串联） |
+| 2026-10-14 | zmd6s6 | 创建（含基础知识串联） |

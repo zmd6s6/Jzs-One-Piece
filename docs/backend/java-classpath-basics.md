@@ -61,11 +61,11 @@ Spring Boot（Java 最常用的应用框架）打薄包时有两种附言写法�
 
 ## 实战应用
 
-- [容器一启动就退出](../devops/kubernetes/incidents/noclassdeffound-on-start.md)——裸机启动脚本带了 `-Dloader.path`、容器入口漏抄了这一句的真实案例；
-- [选型：镜像与启动](../devops/kubernetes/decisions/image-and-startup.md)——为什么最终统一用 `java -cp '/app/*:/app/lib/*'`（对任何布局免疫）。
+- [容器一启动就退出](../projects/medical-platform/incidents/noclassdeffound-on-start.md)——裸机启动脚本带了 `-Dloader.path`、容器入口漏抄了这一句的真实案例；
+- [选型：镜像与启动](../projects/medical-platform/decisions/image-and-startup.md)——为什么最终统一用 `java -cp '/app/*:/app/lib/*'`（对任何布局免疫）。
 
 ## 修订记录
 
 | 日期 | 作者 | 变更 |
 |---|---|---|
-| 2026-10-14 | zmd6s6（AI 辅助） | 创建（含基础知识串联） |
+| 2026-10-14 | zmd6s6 | 创建（含基础知识串联） |

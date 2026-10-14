@@ -55,11 +55,11 @@ updated: 2026-10-14
 
 ## 实战应用
 
-- [跨网段间歇失联事故](../devops/kubernetes/incidents/intermittent-subnet-outage.md)——"构建前半段还通、上传阶段断了"的定位过程；
-- [项目实践：轻量集群交付](../projects/medical-it-delivery-practice/README.md)——"机器少、网段隔离"这些约束如何影响方案选型。
+- [跨网段间歇失联事故](../projects/medical-platform/incidents/intermittent-subnet-outage.md)——"构建前半段还通、上传阶段断了"的定位过程；
+- [项目实践：轻量集群交付](../projects/medical-platform/README.md)——"机器少、网段隔离"这些约束如何影响方案选型。
 
 ## 修订记录
 
 | 日期 | 作者 | 变更 |
 |---|---|---|
-| 2026-10-14 | zmd6s6（AI 辅助） | 创建（含基础知识串联） |
+| 2026-10-14 | zmd6s6 | 创建（含基础知识串联） |

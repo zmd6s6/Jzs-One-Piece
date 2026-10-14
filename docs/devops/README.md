@@ -1,7 +1,7 @@
 ---
 title: DevOps 域地图
 author: zmd6s6
-description: DevOps 域的导航地图：交付、基础设施、运行环境与诊断的知识入口。
+description: DevOps 基础知识的导航：Kubernetes 学习路径与术语表。
 category: devops
 tags:
   - devops
@@ -13,15 +13,14 @@ updated: 2026-10-14
 
 # DevOps 域地图
 
-**按子域进入**：
+**本域内容**：[Kubernetes 学习路径](./kubernetes/README.md) ｜ [术语表](./kubernetes/glossary.md)
 
-- **[Kubernetes](./kubernetes/README.md)**——轻量集群的机制原理（[internals](./kubernetes/internals/README.md)）、事故复盘（[incidents](./kubernetes/incidents/README.md)）、选型决策（[decisions](./kubernetes/decisions/README.md)）与[术语表](./kubernetes/glossary.md)；
-- linux / docker / ci-cd / observability——预留子域，内容积累后开建。
+**预留子域**：linux / docker / ci-cd / observability（内容积累后开建）
 
-**按底层知识进入**（基础域，不在本域重复）：[计算机网络](../networking/README.md) ｜ [后端基础（JVM/Java/Oracle）](../backend/README.md)
+**实践内容**在[项目域](../projects/medical-platform/README.md)：事故复盘、选型决策、项目复盘。
 
 ## 修订记录
 
 | 日期 | 作者 | 变更 |
 |---|---|---|
-| 2026-10-14 | zmd6s6（AI 辅助） | 从分类简介改为域地图；K8s 内容拆分至 kubernetes 子域 |
+| 2026-10-14 | zmd6s6 | 纯化为知识域地图；事故与选型迁至项目域 |

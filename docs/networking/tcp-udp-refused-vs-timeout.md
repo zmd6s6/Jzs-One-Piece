@@ -64,11 +64,11 @@ nc -zv -w 3 192.168.1.10 1521
 
 ## 实战应用
 
-- [现场服务注册失败导致启动中断](../devops/kubernetes/incidents/registration-failed-multi-port.md)——"8848 通不代表 9848 通"的完整案例；
+- [现场服务注册失败导致启动中断](../projects/medical-platform/incidents/registration-failed-multi-port.md)——"8848 通不代表 9848 通"的完整案例；
 - [机制原理索引的速查表](../devops/kubernetes/internals/README.md)——"refused vs timeout"作为第一判据的使用方式。
 
 ## 修订记录
 
 | 日期 | 作者 | 变更 |
 |---|---|---|
-| 2026-10-14 | zmd6s6（AI 辅助） | 创建（含基础知识串联） |
+| 2026-10-14 | zmd6s6 | 创建（含基础知识串联） |

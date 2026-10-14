@@ -44,7 +44,7 @@ subsets:
   ports: [{ name: db, port: 1521, protocol: TCP }]
 ```
 
-查询 `dbsvr` 直接返回 A 记录（真实 IP），任何程序都认；**换数据库只改 Endpoints 里的 IP 一行**。机制细节见[集群内 DNS](../internals/in-cluster-dns.md)。
+查询 `dbsvr` 直接返回 A 记录（真实 IP），任何程序都认；**换数据库只改 Endpoints 里的 IP 一行**。机制细节见[集群内 DNS](../../../devops/kubernetes/internals/in-cluster-dns.md)。
 
 ## 附带坑：负缓存
 
@@ -54,4 +54,4 @@ subsets:
 
 | 日期 | 作者 | 变更 |
 |---|---|---|
-| 2026-10-14 | zmd6s6（AI 辅助） | 从《K3s 事故复盘》长文拆分独立成篇 |
+| 2026-10-14 | zmd6s6 | 从《K3s 事故复盘》长文拆分独立成篇 |

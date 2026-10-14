@@ -14,8 +14,8 @@ const domains = [
 const directoryNames = {
   handbook: '金融基础手册', casebook: '真实案例',
   'foundations-48-day': '48 天学习计划', templates: '研究模板',
-  'medical-it-delivery-practice': '轻量集群交付实践',
-  kubernetes: 'Kubernetes', incidents: '事故复盘', internals: '机制原理', decisions: '选型决策'
+  'medical-platform': '医疗信息化平台',
+  kubernetes: 'Kubernetes', internals: '机制原理'
 }
 function title(path) {
   const source = readFileSync(join(root, path), 'utf8')

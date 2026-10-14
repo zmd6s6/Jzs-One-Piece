@@ -28,6 +28,7 @@ updated: 2026-10-14
 | 发布产物版本对不上源码 | 流水线连了同名旧仓库 | [连错仓库两个月](./ci-built-from-stale-repo.md) |
 | 部署产物多一层无用的壳 | tar 外面又包了 zip | [产物多余包装](./release-artifact-extra-layer.md) |
 | 跨网段时好时坏 | 子网间路由间歇被挡 | [间歇性失联](./intermittent-subnet-outage.md) |
+| 手动正常、程序报表不存在 | 程序账号缺 SELECT 权限 | [Oracle 权限](./oracle-permission-missing.md) |
 
 ## 学习路径（按机制分组读）
 
@@ -39,4 +40,4 @@ updated: 2026-10-14
 
 | 日期 | 作者 | 变更 |
 |---|---|---|
-| 2026-10-14 | zmd6s6（AI 辅助） | 从《K3s 事故复盘》长文拆分建索引；补入注册失败案例 |
+| 2026-10-14 | zmd6s6 | 从《K3s 事故复盘》长文拆分建索引；补入注册失败案例 |

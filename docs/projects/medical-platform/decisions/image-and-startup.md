@@ -13,7 +13,7 @@ updated: 2026-10-14
 
 # 选型：镜像与启动
 
-> 返回[决策索引](./README.md)。机制地基：[classpath 白话](../../../backend/java-classpath-basics.md)。
+> 返回[决策索引](../incidents/README.md)。机制地基：[classpath 白话](../../../backend/java-classpath-basics.md)。
 
 ## 1. 镜像分发：私有仓库 / 逐台导入
 
@@ -49,5 +49,5 @@ updated: 2026-10-14
 
 | 日期 | 作者 | 变更 |
 |---|---|---|
-| 2026-10-13 | zmd6s6（AI 辅助） | 创建于《选型决策记录》长文 |
-| 2026-10-14 | zmd6s6（AI 辅助） | 按主题拆分独立成篇 |
+| 2026-10-13 | zmd6s6 | 创建于《选型决策记录》长文 |
+| 2026-10-14 | zmd6s6 | 按主题拆分独立成篇 |

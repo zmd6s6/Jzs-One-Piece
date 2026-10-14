@@ -34,7 +34,7 @@ K8s 用"探针"（定期访问一个地址判断程序死活）决定要不要�
 | `/actuator/health/liveness` | 进程还活着吗 | 杀掉重启 |
 | `/actuator/health/readiness` | 能接客了吗 | 暂时不分流 |
 
-它们不掺入外部依赖的状态。机制细节见[健康探针](../internals/health-probes.md)。
+它们不掺入外部依赖的状态。机制细节见[健康探针](../../../devops/kubernetes/internals/health-probes.md)。
 
 ## 附带教训："Running 是谎言"
 
@@ -48,4 +48,4 @@ Java 服务冷启动可能要几分钟，普通探针等不了那么久会误杀
 
 | 日期 | 作者 | 变更 |
 |---|---|---|
-| 2026-10-14 | zmd6s6（AI 辅助） | 从《K3s 事故复盘》长文拆分独立成篇 |
+| 2026-10-14 | zmd6s6 | 从《K3s 事故复盘》长文拆分独立成篇 |

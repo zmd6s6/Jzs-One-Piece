@@ -27,7 +27,7 @@ updated: 2026-10-14
 | 普通 Service 名 | **虚拟地址**（ClusterIP，见[请求旅程](./request-journey.md)——后面还有一跳转接） | 集群内的普通服务 |
 | headless Service 名（`clusterIP: None`） | **后端真实地址列表** | 想直接拿到后端、或指向集群外地址（配 Endpoints） |
 
-指向集群外数据库的标准姿势（headless + Endpoints "通讯录"写法）在[这起事故](../incidents/externalname-to-ip-nxdomain.md)里有完整推导。
+指向集群外数据库的标准姿势（headless + Endpoints "通讯录"写法）在[这起事故](../../../projects/medical-platform/incidents/externalname-to-ip-nxdomain.md)里有完整推导。
 
 ## ExternalName 的本质是 CNAME
 
@@ -41,4 +41,4 @@ CoreDNS 对"查无此名"也有约 30 秒负缓存——改完解析立刻测会
 
 | 日期 | 作者 | 变更 |
 |---|---|---|
-| 2026-10-14 | zmd6s6（AI 辅助） | 从《原理篇》长文拆分独立成篇 |
+| 2026-10-14 | zmd6s6 | 从《原理篇》长文拆分独立成篇 |
