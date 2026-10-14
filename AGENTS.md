@@ -117,6 +117,14 @@ Do not force empty sections into every document.
 - 每篇文档结尾必须有 `## 修订记录` 表（`| 日期 | 作者 | 变更 |`）；**每次实质性修改追加一行**，只增不改。
 - `created` / `updated` 与修订记录保持一致；纯改错字可不记，动了知识内容必须记。
 
+### 5. 结构与粒度（目录规范）
+
+- **一个知识点一篇**：一起事故、一个机制、一组相关决策各自成篇；**长文件只允许是索引页（地图），不允许是内容页**。
+- **目录层级 = 域 → 子域 → 类型目录，最多三层**（如 `devops/kubernetes/incidents/`）。新子域须在 `.vitepress/config.mjs` 的 `directoryNames` 登记中文名，否则侧栏显示英文目录名。
+- **每个类型目录必须有 README.md 作为地图页**，按三种使用意图开入口：①按症状找（排障索引表：症状 → 篇目）；②按路径学（建议阅读顺序）；③按决策查（一句话 + 链接）。
+- **双命名**：文件名用稳定英文 slug（一经创建不改，链接永续）；文章标题用中文症状句/疑问句（搜索友好，可随时改）。
+- **基础知识留在基础域**（networking / backend 等），实践子域只放该主题特有内容并链接过去，不复制基础域内容。
+
 ## Architecture Decision Records
 
 For important technical decisions, include:

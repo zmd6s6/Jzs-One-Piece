@@ -67,7 +67,7 @@ GRANT SELECT ON 表属主.表名 TO 程序账号;
 ## 相关知识
 
 - [DNS：名字是怎么变成地址的](../networking/dns-name-to-address.md)——同样是"名字→实体"的解析问题，DNS 按"谁在查"逐级问路，Oracle 按"谁在连"解析表名，两者同构；
-- [K3s 术语表](../devops/k8s-glossary.md)——本文的"思考链路"方法在容器排障中的对应（L0-L6 分层漏斗）。
+- [K8s 术语表](../devops/kubernetes/glossary.md)——本文的"思考链路"方法在容器排障中的对应（L0-L6 分层漏斗）。
 
 ## 修订记录
 

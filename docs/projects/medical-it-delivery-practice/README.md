@@ -16,7 +16,7 @@ updated: 2026-10-13
 # 实践项目：轻量集群交付体系的搭建（某医疗信息化产品线）
 
 > 这是一次真实工作的记录：范围、约束、做法、妥协与复盘。
-> 名词不熟先查[术语表](../../devops/k8s-glossary.md)；通用原理与事故细节分别见 [原理篇](../../devops/k3s-internals.md) 与 [事故篇](../../devops/k3s-incident-principles.md)；选型对比见 [ADR](../../devops/k3s-decision-records.md)。
+> 名词不熟先查[术语表](../../devops/kubernetes/glossary.md)；通用原理与事故细节分别见 [原理篇](../../devops/kubernetes/internals/README.md) 与 [事故篇](../../devops/kubernetes/incidents/README.md)；选型对比见 [ADR](../../devops/kubernetes/decisions/README.md)。
 
 ## 1. 背景与约束（决定了后面所有选择）
 
@@ -93,10 +93,10 @@ updated: 2026-10-13
 
 ## 7. 相关文档
 
-- [Kubernetes / 容器交付 术语表](../../devops/k8s-glossary.md)
-- [K3s 实战事故与原理](../../devops/k3s-incident-principles.md)
-- [K3s 体系选型决策记录（ADR）](../../devops/k3s-decision-records.md)
-- [K3s/K8s 组件原理篇](../../devops/k3s-internals.md)
+- [Kubernetes / 容器交付 术语表](../../devops/kubernetes/glossary.md)
+- [K3s 实战事故与原理](../../devops/kubernetes/incidents/README.md)
+- [K3s 体系选型决策记录（ADR）](../../devops/kubernetes/decisions/README.md)
+- [K3s/K8s 组件原理篇](../../devops/kubernetes/internals/README.md)
 
 ## 修订记录
 

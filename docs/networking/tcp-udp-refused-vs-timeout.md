@@ -64,8 +64,8 @@ nc -zv -w 3 192.168.1.10 1521
 
 ## 实战应用
 
-- [K3s 事故复盘：现场服务注册失败导致启动中断](../devops/k3s-incident-principles.md)——"8848 通不代表 9848 通"的完整案例；
-- [K3s 原理篇的排障速查表](../devops/k3s-internals.md)——"refused vs timeout"作为第一判据的使用方式。
+- [现场服务注册失败导致启动中断](../devops/kubernetes/incidents/registration-failed-multi-port.md)——"8848 通不代表 9848 通"的完整案例；
+- [机制原理索引的速查表](../devops/kubernetes/internals/README.md)——"refused vs timeout"作为第一判据的使用方式。
 
 ## 修订记录
 

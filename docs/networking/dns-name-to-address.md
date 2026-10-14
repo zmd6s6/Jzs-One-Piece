@@ -51,9 +51,9 @@ updated: 2026-10-14
 
 ## 实战应用
 
-- [K3s 事故复盘：ExternalName 指向 IP 为什么是死路](../devops/k3s-incident-principles.md)——CNAME 的目标必须是个"名字"，写 IP 字面量时无法变成 A 记录，整体返回 NXDOMAIN；
+- [ExternalName 指向 IP 为什么是死路](../devops/kubernetes/incidents/externalname-to-ip-nxdomain.md)——CNAME 的目标必须是个"名字"，写 IP 字面量时无法变成 A 记录，整体返回 NXDOMAIN；
 - 同一篇里的"CoreDNS 负缓存 30 秒"案例——改完名字源立刻测试导致的误判；
-- [K3s 原理篇的 DNS 章节](../devops/k3s-internals.md)——集群内部这一套是怎么跑的。
+- [集群内的 DNS](../devops/kubernetes/internals/in-cluster-dns.md)——集群内部这一套是怎么跑的。
 
 ## References
 

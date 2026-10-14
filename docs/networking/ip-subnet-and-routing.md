@@ -55,7 +55,7 @@ updated: 2026-10-14
 
 ## 实战应用
 
-- [K3s 事故复盘：跨网段网络中断排查](../devops/k3s-incident-principles.md)——"构建前半段还通、上传阶段断了"的定位过程；
+- [跨网段间歇失联事故](../devops/kubernetes/incidents/intermittent-subnet-outage.md)——"构建前半段还通、上传阶段断了"的定位过程；
 - [项目实践：轻量集群交付](../projects/medical-it-delivery-practice/README.md)——"机器少、网段隔离"这些约束如何影响方案选型。
 
 ## 修订记录

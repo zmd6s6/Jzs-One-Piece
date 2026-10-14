@@ -61,8 +61,8 @@ Spring Boot（Java 最常用的应用框架）打薄包时有两种附言写法�
 
 ## 实战应用
 
-- [K3s 事故复盘：一次容器启动失败的剖析](../devops/k3s-incident-principles.md)——裸机启动脚本带了 `-Dloader.path`、容器入口漏抄了这一句的真实案例；
-- [K3s 选型记录第 4 条](../devops/k3s-decision-records.md)——为什么最终统一用 `java -cp '/app/*:/app/lib/*'`（对任何布局免疫）。
+- [容器一启动就退出](../devops/kubernetes/incidents/noclassdeffound-on-start.md)——裸机启动脚本带了 `-Dloader.path`、容器入口漏抄了这一句的真实案例；
+- [选型：镜像与启动](../devops/kubernetes/decisions/image-and-startup.md)——为什么最终统一用 `java -cp '/app/*:/app/lib/*'`（对任何布局免疫）。
 
 ## 修订记录
 
