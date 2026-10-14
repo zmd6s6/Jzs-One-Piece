@@ -19,7 +19,7 @@ updated: 2026-10-14
 
 ## K3s：把管家和全套家具塞进一个文件
 
-**K3s** 是 K8s 的一个"打包发行版"：把管家和全套家具（容器运行时 containerd、网络组件 flannel、DNS、存储插件）塞进**一个可执行文件**。两台低配服务器、断网环境也能 5 分钟起集群——这正是[项目实践](../../../../projects/medical-it-delivery-practice/README.md)选它的原因（见[选型：平台与拓扑](../decisions/platform-and-topology.md)）。
+**K3s** 是 K8s 的一个"打包发行版"：把管家和全套家具（容器运行时 containerd、网络组件 flannel、DNS、存储插件）塞进**一个可执行文件**。两台低配服务器、断网环境也能 5 分钟起集群——这正是[项目实践](../../../projects/medical-it-delivery-practice/README.md)选它的原因（见[选型：平台与拓扑](../decisions/platform-and-topology.md)）。
 
 代价：默认家具都是选好的，**不认识它们就会被默认值坑**（本文末尾逐一报名字）。
 
