@@ -6,7 +6,7 @@ import matter from 'gray-matter'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const domains = [
-  ['cpp', 'C++'], ['qt', 'Qt'], ['backend', '后端开发'],
+  ['cpp', 'C++'], ['qt', 'Qt'], ['backend', '后端开发'], ['networking', '计算机网络'],
   ['devops', 'DevOps'], ['ai', 'AI 与 Agent'],
   ['architecture', '架构设计'], ['projects', '项目实践'],
   ['finance', '金融与投资'], ['notes', '随手记录']

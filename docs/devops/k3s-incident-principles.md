@@ -1,240 +1,190 @@
 ---
-title: K3s 双集群实战知识库：事故、原理与纪律
-description: 从零搭建 K3s 单/双节点集群、镜像流水线与运维体系过程中踩过的高价值坑的原理级复盘：JVM 容器内存、薄 jar 启动、无 registry 分发、DNS 名字源、探针与声明式纪律。
+title: K3s 事故复盘：现象、推理与根因
+description: 搭建轻量集群与交付体系过程中真实发生的事故复盘：每条按"现象→排查推理→根因→修复→预防"展开，术语均有白话解释并链接基础知识笔记。
 category: devops
 tags:
   - k3s
   - kubernetes
-  - jvm
-  - docker
-  - cicd
   - postmortem
 status: active
 created: 2026-10-13
-updated: 2026-10-13
+updated: 2026-10-14
 ---
 
-# K3s 双集群实战知识库：事故、原理与纪律
+# K3s 事故复盘：现象、推理与根因
 
-> 来源：一次轻量集群与交付体系的搭建过程。名词不熟先查[术语表](./k8s-glossary.md)；背景与取舍见[选型决策记录](./k3s-decision-records.md)。
-> 记录标准：根因一句能说清、易于复发、有通用价值。文中服务名已脱敏（gateway / platform / pacs 泛指三类 JVM 服务：网关、平台、影像处理）。
+> **读这篇需要什么背景**：不需要 Kubernetes 经验。遇到不认识的词，文中有白话解释；想深入底层机制，按各节开头的"先看"链接去读基础知识笔记：
+> [DNS 基础](../networking/dns-name-to-address.md) ｜ [端口：拒绝 vs 超时](../networking/tcp-udp-refused-vs-timeout.md) ｜ [IP 与子网路由](../networking/ip-subnet-and-routing.md) ｜ [NAT 与端口转发](../networking/nat-and-port-forward.md) ｜ [JVM 内存](../backend/jvm-memory-anatomy.md) ｜ [classpath](../backend/java-classpath-basics.md)
+> 名词速查：[术语表](./k8s-glossary.md)。背景故事：[项目实践](../projects/medical-it-delivery-practice/README.md)。文中服务名已脱敏（gateway/platform/pacs 泛指网关、平台、影像处理三类 Java 服务）。
 
-## 0. 全景：所有事故都落在三条主线上
+## 0. 全景：九起事故落在三条线上
 
-1. **镜像与启动**——jar 怎么打的，容器入口怎么写的；
-2. **集群与依赖**——名字怎么解析、镜像怎么到节点、探针怎么判活；
-3. **纪律与流程**——集群状态是否声明式、变更是否可回滚、是否有门禁。
-
----
-
-## 一、JVM 容器内存学：三起 OOM 的完整谱系
-
-### 1.1 原理：容器里的 JVM 到底吃多少内存
-
-```
-JVM 总占用 = 堆(-Xmx) + Metaspace + 堆外(direct memory，Netty 类框架的大头) + 线程栈 + GC 开销
-容器 limit 是【总和】的天花板，不是堆的天花板。
-```
-
-三起事故恰好覆盖三种错法：
-
-| 事故 | 参数组合 | 后果 |
-|---|---|---|
-| A：堆超 limit | limit 512Mi，未设 env → 镜像默认 `-Xms1g -Xmx2g` | `OOMKilled (exit 137)`，每轮活 14 秒，重启 437 次 |
-| B：Metaspace 封死 | `-Xmx6g` 很富裕，但 `-XX:MaxMetaspaceSize=192m` | `OutOfMemoryError: Metaspace`（堆根本没用完） |
-| C：默认参数贴脸 | 未显式设置 JAVA_OPTS = 信任镜像里烘焙的值 | 与 limit 长期不匹配，负载一上来就炸 |
-
-### 1.2 判读要点
-
-- `Last State: OOMKilled, Exit Code 137` 且**日志无异常即死** → 内核杀的，查 JVM 参数与 limit；
-- 日志明确 `OutOfMemoryError: Metaspace` → 查 `MaxMetaspaceSize` 上限，**堆大小与此无关**；
-- 事故 B 的教训：`-XX:MaxMetaspaceSize` 从别的服务配置里抄数字非常危险——重类加载的应用（ORM 动态代理、报告生成库等）需要 512m 级别。
-
-### 1.3 口径与根治
-
-| 服务类型 | limit | JAVA_OPTS 示例 |
-|---|---|---|
-| 轻量网关（Netty） | 1Gi | `-Xms256m -Xmx512m -XX:MaxMetaspaceSize=192m -XX:MaxDirectMemorySize=256m` |
-| 平台服务 | 2Gi | `-Xms512m -Xmx1g -XX:MaxMetaspaceSize=384m -XX:MaxDirectMemorySize=256m` |
-| 重业务（影像/报告） | 2Gi | `-Xms512m -Xmx1g -XX:MaxMetaspaceSize=512m -XX:MaxDirectMemorySize=256m` |
-
-- 铁律：**堆 + Metaspace + 堆外 < limit**，三者必须一起看、一起改；
-- 更彻底的方案：镜像默认值改用 `-XX:MaxRAMPercentage=70 -XX:InitialRAMPercentage=50`，堆随 limit 自适应，这类问题整族消失；
-- 配套：加 `-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=...`，事后有现场。
+1. **镜像与启动**——程序怎么打包的、容器怎么启动的（事故一、二）；
+2. **集群与依赖**——名字怎么解析、镜像怎么到达每台机器、健康怎么判断（事故三～六）；
+3. **纪律与流程**——集群状态是否声明式管理、变更是否可回滚（事故七～九）。
 
 ---
 
-## 二、镜像布局与启动方式：一次容器启动失败的分析
+## 一、容器一启动就退出，报"找不到类"
 
-### 2.1 原理：Spring Boot 应用的三种产物形态
+> 先看：[classpath 白话：Java 是怎么找到类的](../backend/java-classpath-basics.md)
 
-| 形态 | MANIFEST | `java -jar` | 说明 |
-|---|---|---|---|
-| fat jar | Main-Class=JarLauncher，依赖嵌在 jar 内 | ✅ | 单文件大产物 |
-| thin jar（NONE 布局） | Main-Class=业务主类 + `Class-Path: lib/xxx.jar...` 清单 | ✅（靠 manifest Class-Path） | 依赖在旁边 lib/ |
-| thin jar（ZIP 布局） | Main-Class=**PropertiesLauncher** | 启动失败（必须用 `-Dloader.path=./lib` 指路） | 裸 `java -jar` 时依赖一个都加载不到 |
+**现象**：新发布的镜像在集群里反复重启（K8s 术语叫 CrashLoopBackOff，"崩溃→退避重试"循环），日志最后一行是 `NoClassDefFoundError`（"找不到类"），调用栈开头是 `PropertiesLauncher`（Spring Boot 的一种引导器，见背景链接）。
 
-**兼容矩阵**（同一份薄 jar 配合不同启动方式的结果；如何取舍见 [ADR 第 4 节](./k3s-decision-records.md)）：
+**排查推理**：类找不到，第一反应是"依赖没打进包"→ 挂载镜像看内容，依赖整整齐齐躺在 `/app/lib/` 目录里，**包没问题** → 那就是启动命令没让它去找这个目录。对照裸机的启动脚本：脚本里有一句 `-Dloader.path=./lib`（"去 lib 目录找依赖"），而容器的启动命令是裸的 `java -jar`——**恰好漏抄了这一句**。同一个包在裸机正常、在容器必挂，分界线找到了。
 
-| 启动方式 ＼ 布局 | NONE | ZIP |
-|---|---|---|
-| `java -cp 'app.jar:lib/*' 主类` | ✅ | ✅（布局免疫） |
-| `java -Dloader.path=./lib -jar` | ✅ | ✅ |
-| 裸 `java -jar` | 能跑 | 启动失败 |
+**根因**：`java -jar`（靠 jar 内附言找依赖）遇上 ZIP 布局的包（附言里没写依赖位置，必须靠 `-Dloader.path` 补充说明），两者不匹配。更隐蔽的是：**同一个构建线打的另一个服务恰好是 NONE 布局**（附言里带了完整依赖清单），裸 `java -jar` 也能跑——把问题掩盖了两个月。
 
-### 2.2 事故：CI 里内联的 Dockerfile
+**修复**：容器启动命令统一为 `java -cp '/app/*:/app/lib/*' 主类`——`-cp` 是"直接给依赖清单"，和 jar 的附言无关，**对任何打包布局都成立**。
 
-- **现象**：发版镜像起来即崩，`NoClassDefFoundError`，调用栈入口是 `PropertiesLauncher.main`；
-- **根因链**：裸机启动脚本本来就带 `-Dloader.path=./lib` → CI 的内联 Dockerfile 用裸 `java -jar` 时**漏抄了这一句** → ZIP 布局薄 jar 的依赖全在镜像里却一个没加载；同一条 CI 打的另一个服务恰好是 NONE 布局，裸 `java -jar` 侥幸活着，掩盖了问题；
-- **修复**：容器入口统一 `java -cp '/app/*:/app/lib/*' 主类`——显式 classpath 对任何布局免疫；
-- **预防**：
-  1. **Dockerfile 只能住在源码仓**，CI 禁止内联（内联 = 和代码不同版本演进 = 漂移）；
-  2. classpath 用通配（`/app/*`），**禁止硬编码带版本的 jar 文件名**——版本一升启动即断；
-  3. 发版产物 push 之前做一次 `docker run` + 健康端点冒烟。
+**预防**：① 构建镜像的说明书（Dockerfile）只放源码仓库，构建流水线不许自带私藏版本（本次事故的私藏版正是漏抄来源）；② 清单用通配符写目录（`lib/*`），不写死带版本号的文件名；③ 发布前起一个容器做冒烟测试（访问一次健康检查地址），起不来的镜像不许进仓库。
 
 ---
 
-## 三、无 Registry 的镜像分发
+## 二、容器不报任何错，却被反复杀掉（三起 OOM）
 
-### 3.1 原理
+> 先看：[JVM 内存白话](../backend/jvm-memory-anatomy.md)——堆、元空间、堆外三块内存的类比。
 
-`imagePullPolicy: IfNotPresent` 的语义是"本地有就不拉"；**本地没有时它会去远端 registry 拉**——而离线环境里这个"远端"是 Docker Hub：不通 → 超时 → 重试 → `ImagePullBackOff` 无限挂。
+Java 程序占的内存是三块之和（操作台+菜谱柜+借来的桌面），容器的内存限制管的是总和。三次翻车恰好各错一块：
 
-### 3.2 事故
+**① 堆超过限额**：容器限了 512MB，没配堆参数 → 程序按默认要 1GB → 一启动就被操作系统"掀桌"（OOMKilled，退出码 137），**日志一个字都没有**，因为这个杀发生在 Java 层面之下。该服务重启了 437 次，每次只活 14 秒。
+→ 判别方法：查 Pod 的 Last State（"上一次死因"），显示 `OOMKilled` 就往内存配置查，别翻日志。
 
-双节点集群，新版本镜像只导入了控制面节点；另一节点的副本 **ImagePullBackOff 挂了 5 小时**，事件里 kubelet 反复 `Pulling image` + `dial tcp ...:443 i/o timeout`。同服务在好节点上的副本 Running，极具迷惑性。
+**② 元空间被人为封顶**：堆给了 6G 很富裕，但配了 `-XX:MaxMetaspaceSize=192m`，而这个服务要加载的类特别多 → "菜谱柜"塞爆，报 `OutOfMemoryError: Metaspace`——**此时堆还空着一大半**。"内存够"必须三块都够。
+→ 修复：该参数提到 512m（重业务服务的合理下限）。
 
-### 3.3 两种模式与选择
+**③ 没配参数 = 信任镜像里的默认值**：某服务没显式配内存参数，用的是镜像里烘焙的旧默认值（1G/2G），和新环境的限额长期不匹配，负载一上来就翻车。
+→ 预防：内存参数和限额必须成对出现在部署清单里，写死"三块之和 < 限额"的检查项。
 
-| 模式 | 适用 | 要点 |
-|---|---|---|
-| 私有 registry（registry:2） | 双节点以上 / 频繁发版 | 集群内部署，NodePort 暴露；**每个节点**写 `/etc/rancher/k3s/registries.yaml`（明文 HTTP 必须显式 `http://`）并 `systemctl restart k3s` |
-| 离线导入 | 单节点 / 断网 / 低频 | 每个节点 `ctr -n k8s.io images import x.tar` |
-
-- **门禁（G2）**：apply 之前，**逐节点**执行 `ctr images ls -q | grep <tag>` 确认有输出——把它写成 preflight 脚本；
-- 保留 N-1 版本镜像与 tar，否则等于放弃回滚；注意 k3s 磁盘紧张时会 GC 未使用镜像。
+**根治方向**：镜像默认值改用百分比参数（`-XX:MaxRAMPercentage=70`，堆随限额自动伸缩），见[选型记录第 9 条](./k3s-decision-records.md)。
 
 ---
 
-## 四、集群外依赖的"名字源"：DNS 学四则
+## 三、只有一个副本起不来，一挂就是几小时
 
-### 4.1 ExternalName 指向 IP 是死路
+> 先看：[端口：拒绝 vs 超时](../networking/tcp-udp-refused-vs-timeout.md)
 
-ExternalName 只回一条 **CNAME**，目标是 IP 字面量时无法合成 A 记录 → CoreDNS 直接回 **NXDOMAIN**。（更早的翻车版：`externalName` 写成了自己的名字，CNAME 自循环。）
+**背景**：这套环境没有私有镜像仓库（registry），发布新版本要**人工把镜像文件拷到每一台机器**上导入。
 
-**正解：headless Service + 手工 Endpoints**（同名绑定、无 selector）：
+**现象**：双节点集群，发布后一个副本正常、另一个一直报 `ImagePullBackOff`（"拉不到镜像，退避重试"），持续 5 小时。日志显示它在反复尝试连接 Docker Hub（公网镜像仓库）然后超时。
+
+**推理**：本机没有这个镜像时，系统会按"镜像来源地址"去拉——而这套离线环境根本出不了网，所以永远超时。镜像明明发布过，为什么这台机器没有？→ **发布时只拷到了其中一台**。
+
+**根因**：无仓库环境里"镜像分发到每台机器"是一个纯人工步骤，漏一台就是无限挂起；同服务的另一个副本恰好落在有好镜像的机器上一切正常，极具迷惑性。
+
+**修复与预防**：① 立即修复=把镜像文件拷到缺失节点导入；② 制度化=部署前跑一条检查命令，**逐台**确认镜像存在（`ctr images ls | grep <版本号>`），不过检查不许点部署；③ 节点多的环境直接上私有仓库，推一次全节点可拉——见[选型记录第 3 条](./k3s-decision-records.md)。
+
+---
+
+## 四、引用外部数据库的名字，有一种写法必然失败
+
+> 先看：[DNS：名字是怎么变成地址的](../networking/dns-name-to-address.md)——A 记录直接给地址，CNAME 只给"再去查谁"。
+
+**场景**：集群里的程序要访问集群外的数据库，配置里统一写一个名字（如 `dbsvr`），由 K8s 把这个名字翻译成数据库的真实地址。K8s 提供了多种"翻译"写法，其中一种埋着必然失败的坑。
+
+**现象**：用了 `ExternalName` 类型的写法（把它登记成"另一个名字的别名"），程序死活解析不到，报 NXDOMAIN（"查无此名"）。更早的版本甚至把别名登记成了它自己（自己指向自己，死循环）。
+
+**推理与根因**：ExternalName 生成的 DNS 记录是 **CNAME**——"你去找那个名字"。而我们填的目标是一个 **IP 地址字面量**（如 192.168.x.x）。DNS 查询的最后一步必须拿到 A 记录（名字→IP）；CNAME 的目标如果是 IP 字面量，它**不是一个可以再查的名字**，整条查询链断在原地，返回"查无此名"。
+
+**正确写法**（headless Service + Endpoints，可以理解为"集群里登记一张指向外部地址的通讯录"）：
 
 ```yaml
 apiVersion: v1
-kind: Service
+kind: Service          # 名字叫 dbsvr，但不分配虚拟地址（clusterIP: None）
 metadata: { name: dbsvr }
 spec:
   clusterIP: None
-  ports: [{ name: oracle, port: 1521 }, { name: redis, port: 6379 }]
+  ports: [{ name: db, port: 1521 }]
 ---
 apiVersion: v1
-kind: Endpoints        # 必须与 Service 同名
+kind: Endpoints       # 与上面同名绑定：dbsvr 的真实地址是这一条
 metadata: { name: dbsvr }
 subsets:
-- addresses: [{ ip: 10.0.0.56 }]   # 集群外数据库/缓存真实地址
-  ports:
-  - { name: oracle, port: 1521, protocol: TCP }
-  - { name: redis, port: 6379, protocol: TCP }
+- addresses: [{ ip: 192.168.x.x }]   # 数据库真实地址
+  ports: [{ name: db, port: 1521, protocol: TCP }]
 ```
 
-业务配置统一写名字（`dbsvr`），换库只改 Endpoints 的 IP。
+这样查询 `dbsvr` 直接返回 A 记录（真实 IP），任何程序都认。**换数据库只改 Endpoints 里的 IP 一行**。
 
-### 4.2 其余三则
-
-- **负缓存**：CoreDNS 对 NXDOMAIN 有 ~30s 负缓存——刚重建完名字解析不到，**等半分钟再判死刑**；
-- **节点 `/etc/hosts` 与 Pod 无关**：Pod 的 resolv.conf 走 CoreDNS，节点 hosts 只对本机进程生效（k3s 有 hosts→NodeHosts 同步机制但不可靠，别依赖）；
-- **改 kubeconfig 的 context 名时**，`- name:`、`context.cluster:`、`context.user:` 三处引用必须一起改——只改 name 会导致客户端（Lens/FreeLens 类）校验报 `No valid cluster object provided`，而且拿证书直接 curl API 是通的，极易误判。
+**附带坑**：改完立刻测试会**依然失败**——DNS 有约 30 秒"负缓存"（连"查无此名"也会被记住一阵子，见背景链接），等一分钟再下结论。
 
 ---
 
-## 五、探针设计学：聚合健康端点会杀死好容器
+## 五、健康检查把好端端的程序杀了
 
-- **原理**：`/actuator/health`（聚合）会被**任何一个**坏组件（如注册中心客户端连不上）拖成 503；把它配成 liveness → 探针反复杀掉进程健康的容器 → CrashLoop，**自愈机制变成自杀机制**；
-- **正解**：liveness/readiness 分别打 `/actuator/health/liveness`、`/actuator/health/readiness`（health group，只反映存活/就绪状态本身；Spring Boot 在 K8s 里默认暴露）；
-- **慢启动保护**：Spring 冷启动可达数分钟（实测 229s），用 `startupProbe`（period 10s × failureThreshold 60 = 10 分钟容忍）替代大 initialDelay；
-- **"Running 是谎言"**：没有探针时 Pod 显示 1/1 Running 与"服务可用"毫无关系——曾有一服务 DB 断连数日照常绿灯。验收看组端点 + 业务冒烟，不看绿灯。
+**背景**：K8s 用"探针"（定期访问一个地址判断程序死活）决定要不要重启容器。
 
----
+**现象**：加了探针后，原本正常的服务开始周期性被杀。查日志：程序本身活得好好的，只是它的"综合健康报告"（`/actuator/health`，会汇总数据库、注册中心等**所有**依赖的状态）因为某一个外部依赖抖动而返回失败。
 
-## 六、配置管理四则
+**根因**：探针配在了**综合报告**上——任何一个依赖不好，报告就是"不健康"，K8s 就杀容器重启。**自愈机制被外部依赖劫持了**：依赖抖一下，所有副本被轮流杀一遍。
 
-1. **subPath 挂载不热更新**：改了 ConfigMap，Pod 里文件不变；必须 `rollout restart`；
-2. **双轨漂移**：同一份口令同时存在于 ConfigMap（明文）和 Secret，改一漏一是迟早的事——收敛到单一来源；
-3. **声明式纪律**：集群状态只能由仓里的清单渲染产生；`kubectl edit`/`sed 改线上`/只改集群不改仓，都会在下一次 apply 时静默回退；
-4. **kustomize 的两个坑**：overlay 引用 base 目录之外的单个**文件**会被安全限制拒绝（复制或引目录）；`images: newName/newTag` 是切 registry 前缀与版本的正道，别用 sed。
+**修复**：探针改打**分组端点**——`/actuator/health/liveness`（只回答"进程还活着吗"）和 `/actuator/health/readiness`（只回答"能接活儿了吗"），它们不掺入外部依赖的状态。这两组地址是 Spring Boot 在 K8s 环境下默认提供的。
+
+**附带教训（"Running 是谎言"）**：没配探针的服务显示绿色 Running，只说明"容器没退出"，不代表功能可用——曾有服务数据库断连数天界面照样全绿。验收要看分组健康端点和真实业务请求，不看绿灯。
+
+**慢启动保护**：Java 服务冷启动可能要几分钟，探针等不了那么久会误杀。用 `startupProbe`（专门的"启动期保护"，给足 10 分钟容忍）而不是把普通探针的延迟调很大。
 
 ---
 
-## 七、CI/CD 与版本纪律
+## 六、改了配置，程序却还用旧的
 
-### 7.1 一起不易察觉的案例：CI 从另一个同名仓库构建
+**现象**：改了配置内容（ConfigMap，K8s 存配置的地方），容器里的文件**纹丝不动**。
 
-- **现象**：发版产物版本号与源码仓 HEAD 对不上；
-- **根因**：CI 里源码 URL 的 group 路径写错，但那个错误路径**真实存在另一个旧副本仓库**（HTTP 200 可达 ≠ 是同一个仓）；新旧两仓同名，构建一切正常；
-- **教训**：CI 的仓库地址要人工核对两遍；构建日志里的版本号/提交号要和发布单对得上；旧副本仓要归档或删除。
+**根因**：该文件是以"单文件挂载"（subPath）方式挂进容器的——这种挂载方式**不跟随源更新**（整目录挂载才会自动刷新内容）。
 
-### 7.2 产物与流程
-
-- **产物层数最小化**：`docker save` 的 tar 不要再包一层 zip——下载方还要解压才能 `ctr import`；
-- **发版七步序列**（每步有门禁）：准备（定 tag/回滚版本）→ 产物（来源可信）→ **分发到全节点（G2）** → 配置核对 → 声明式 apply → **验收六条（G5）** → 观察窗 + 留痕；
-- **回滚三式**：`rollout undo`（最快）/ tag 退回旧值再 apply（可留痕）/ 整环境 `delete -k` 重放（灾难级）；
-- **禁止**：`kubectl set image` 直改集群（绕过仓与留痕）、带着 G2 未过就 apply、没确认旧镜像还在就发新版。
+**修复与预防**：改完配置必须**重启对应服务**（`kubectl rollout restart`）。这条要写进操作手册的固定步骤，因为"我改了呀"的错觉每年都会坑人。
 
 ---
 
-## 八、排障方法论：L0-L6 漏斗
+## 七、构建流水线连着"另一个仓库"跑了两个月
 
-15 分钟内**定位到层**（不是修好）：
+**现象**：发布的版本号和源码仓库的最新代码对不上——产物里出现了两个月前的旧功能号。
 
-```
-L0 分类（30秒）  Pod起不来→L3 / 功能不对→L5·L6 / 全不通→L1
-L1 集群层        nodes ready、kube-system、影响面是全部还是单个
-L2 节点层        磁盘/内存、本节点有没有目标镜像
-L3 负载层        describe 看 Last State + Events + previous logs（★死因元凶都在 Last State）
-L4 配置层        cm 内容、挂载是否生效、subPath 是否重启过
-L5 依赖层        名字解析 → 端口连通 → 中间件健康 → 服务注册
-L6 应用层        health 组端点、错误日志聚合（sort | uniq -c）
-```
+**推理**：先怀疑"没拉最新代码"→ 检查流水线配置，仓库地址的组名拼错了……但**那个拼错的地址真的存在另一个同名旧仓库**（历史遗留副本），所以构建一路绿灯。**HTTP 能访问 ≠ 是你想访问的那个仓库**。
 
-**两个高价值判读**：
+**根因**：流水线配置里的仓库地址指向了同名旧副本；没有人核对过"构建源头"。
 
-- `Last State` 一眼定因：`OOMKilled`→JVM/limit；`Error`+`NoClassDefFound`→镜像入口；`ImagePullBackOff`→镜像分发；`Unhealthy`→探针；
-- **端口测试的两种失败语义不同**：秒回 `connection refused` = 没人监听（服务没起/版本不对/端口错）；`timeout` = 中间网络挡（即使本机防火墙关了，路由器/安全组仍可能挡）。**"8848 通"不代表 "9848 通"**——注意 gRPC 类端口（HTTP 端口 +1000）经常被单独放行遗漏。
-
-**升级上报条件**（满足其一就停手上报）：涉及集群层 30 分钟未恢复 / 需要重建数据 / 同现象 2 小时内 ≥3 次 / 需要变更网络与存储基础设施。
+**修复与预防**：① 改回正确地址，旧副本仓库归档删除（防止再有人连错）；② 制度上：发布记录必须登记"构建源仓库+版本号"，与发布单人工核对一次；③ 长期方案见[选型记录第 11 条](./k3s-decision-records.md)（版本号与代码绑定）。
 
 ---
 
-## 附：一页速查
+## 八、产物多包了一层"无用的壳"
 
-| 症状 | 根因 | 一句话修法 |
+**现象**：发布的镜像产物是一个 zip，里面装着一个 tar（镜像文件）。实施同事每次部署都要"先解压再导入"，多一道纯手工工序。
+
+**根因**：打包脚本沿用了通用压缩习惯，忘了**镜像 tar 本身就是成品**——导入命令（`ctr images import`）直接吃 tar。
+
+**修复**：打包阶段去掉压缩层，产物直接是 `.tar`。判断标准很简单：**下游要拆开才能用的包装，每一层都要问"这层提供了什么价值"**。
+
+---
+
+## 九、跨网段"间歇性失联"
+
+> 先看：[IP、子网与路由](../networking/ip-subnet-and-routing.md)——为什么"在一家公司"不等于"在一张网上"。
+
+**现象**：发布流水线前半段（拉代码、编译）正常，到"上传产物"阶段突然全部连不上目标网段；过一阵又自己恢复。
+
+**推理**：同一台构建机，前半段通说明**机器活着、部分路通**；失败集中在特定目标网段 → 这是子网间路由层面的间歇问题（中间设备/策略），不是构建机自身故障。判别工具就是[拒绝 vs 超时](../networking/tcp-udp-refused-vs-timeout.md)的区分：全部超时=路被挡。
+
+**预防**：把"各目标网段连通性探测"做成发布前检查（每个目标端口各测一遍），失败时明确报告"网络不通，等恢复再试"，避免盲目重跑整条流水线浪费时间。
+
+---
+
+## 附：一页速查（症状 → 一句话 → 详情）
+
+| 症状 | 一句话 | 章节 |
 |---|---|---|
-| NoClassDefFoundError + PropertiesLauncher 调用栈 | 裸 `java -jar` × ZIP 薄 jar | 入口改 `java -cp '/app/*:/app/lib/*'` |
-| OOMKilled 137，无异常日志 | 堆超 limit | 显式 JAVA_OPTS，三项之和 < limit |
-| OutOfMemoryError: Metaspace | MaxMetaspaceSize 封太小 | 提到 512m 级或删除该参数 |
-| 单节点副本 ImagePullBackOff 数小时 | 镜像没分发到该节点 | 逐节点 import + preflight 校验 |
-| NXDOMAIN（ExternalName 指 IP） | CNAME 无法合成 A | headless Service + Endpoints |
-| 刚建的对象解析不到 | CoreDNS 负缓存 | 等 30~60s |
-| 改了配置不生效 | subPath 不热更新 | rollout restart |
-| 探针周期性杀好容器 | liveness 打聚合 health | 改 health/liveness 组端点 |
-| 长连接服务"Running"但不可用 | 无探针假健康 | 组端点探针 + 业务冒烟 |
-| 发版产物版本对不上源码 | CI 连了同名旧仓 | 核对仓库地址，归档旧仓 |
-| kubeconfig 客户端拒收 | 改名漏了 cluster/user 引用 | 三处一起改 + 语义校验 |
+| NoClassDefFoundError + PropertiesLauncher | 启动方式与打包布局不匹配 | 一 |
+| 无日志重启，Last State=OOMKilled | 内存三块之和超过限额 | 二 |
+| 报 Metaspace 耗尽，堆还空着 | 元空间上限封太小 | 二 |
+| 单节点副本 ImagePullBackOff 挂死 | 镜像没分发到那台机器 | 三 |
+| NXDOMAIN（ExternalName 填了 IP） | CNAME 无法指向 IP 字面量 | 四 |
+| 刚改的解析还失败 | DNS 负缓存 ~30 秒 | 四 |
+| 探针周期性杀好容器 | 探针打了"综合健康报告" | 五 |
+| 改配置不生效 | 单文件挂载不热更新 | 六 |
+| 产物版本对不上源码 | 流水线连了同名旧仓库 | 七 |
 
 ## Related
 
-- [Kubernetes / 容器交付 术语表](./k8s-glossary.md)
-- [K3s 体系选型决策记录（ADR）](./k3s-decision-records.md)
-- [K3s/K8s 组件原理篇](./k3s-internals.md)
-- [实践项目：容器化交付体系的搭建](../projects/medical-it-delivery-practice/README.md)
-
-## References
-
-- Spring Boot Docs: Container Extensions（RAMPercentage / 探针端点）
-- Kubernetes Docs: Service（headless / ExternalName）、Image Pull Policy
-- K3s Docs: Private Registry Configuration（registries.yaml）
+- [术语表](./k8s-glossary.md) ｜ [选型决策记录](./k3s-decision-records.md) ｜ [组件原理篇](./k3s-internals.md) ｜ [项目实践](../projects/medical-it-delivery-practice/README.md)
+- 基础底座：[DNS](../networking/dns-name-to-address.md) ｜ [拒绝 vs 超时](../networking/tcp-udp-refused-vs-timeout.md) ｜ [子网路由](../networking/ip-subnet-and-routing.md) ｜ [NAT](../networking/nat-and-port-forward.md) ｜ [JVM 内存](../backend/jvm-memory-anatomy.md) ｜ [classpath](../backend/java-classpath-basics.md)

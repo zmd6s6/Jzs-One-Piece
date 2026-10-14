@@ -14,7 +14,7 @@ updated: 2026-10-13
 
 # K3s 体系选型决策记录（ADR）
 
-> 名词不熟先查：[术语表](./k8s-glossary.md)。机制层背景见[组件原理篇](./k3s-internals.md)，对应的事故复盘见[事故与原理](./k3s-incident-principles.md)。
+> **读这份需要什么背景**：每条记录=当时条件下的选择，不做普适推荐。名词不熟查[术语表](./k8s-glossary.md)；机制看[原理篇](./k3s-internals.md)；翻车现场看[事故复盘](./k3s-incident-principles.md)；底层知识：[DNS](../networking/dns-name-to-address.md)、[NAT/端口转发](../networking/nat-and-port-forward.md)、[JVM 内存](../backend/jvm-memory-anatomy.md)、[classpath](../backend/java-classpath-basics.md)。
 > 每条记录：**背景 → 候选（含各自适用条件与代价）→ 本项目怎么选、为什么 → 什么条件下该换**。
 > 说明：本文记录的是"当时条件下的选择"，不做普适推荐；同一条在别的约束下答案可能相反。
 
@@ -54,6 +54,8 @@ updated: 2026-10-13
 
 ## 4. Java 产物形态与容器入口
 
+> 本节的机制地基：[classpath 白话](../backend/java-classpath-basics.md)（三种布局与两种启动方式的对照表在那篇有完整推导）。
+
 | 候选 | 什么条件下合适 | 优点 | 代价与限制 |
 |---|---|---|---|
 | fat jar + `java -jar` | 单体简单交付、不在意镜像体积与层缓存 | 一个文件，启动方式最直观 | 业务一改就重建整个大 jar，镜像层无法复用；与"薄 jar + lib 目录"的裸机交付形态不同，两条线要维护两套 |
@@ -87,6 +89,8 @@ updated: 2026-10-13
 
 ## 7. 集群外中间件怎么被"叫到"（名字源方案）
 
+> 本节的机制地基：[DNS：名字是怎么变成地址的](../networking/dns-name-to-address.md)（A 记录 vs CNAME 决定了 ExternalName 为什么有死路）。
+
 | 候选 | 什么条件下合适 | 优点 | 代价与限制 |
 |---|---|---|---|
 | 配置里直接写 IP | 临时环境、永不更换后端 | 零机制 | 换地址要改多处配置；环境差异混进应用配置 |
@@ -112,6 +116,8 @@ updated: 2026-10-13
 **什么条件下该换**：非 JVM 或没有 HTTP 端点的服务用 tcpSocket；试验环境可以先不配探针，但不要把它当常态。
 
 ## 9. JVM 内存参数：显式数值 / 百分比
+
+> 本节的机制地基：[JVM 内存白话](../backend/jvm-memory-anatomy.md)（堆/元空间/堆外三块内存与容器限额的关系）。
 
 | 候选 | 什么条件下合适 | 优点 | 代价与限制 |
 |---|---|---|---|

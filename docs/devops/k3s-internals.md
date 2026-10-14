@@ -1,123 +1,107 @@
 ---
-title: K3s/K8s 组件原理篇：从进程到请求的机制地图
-description: 以 k3s 为载体的 Kubernetes 机制原理：控制面内嵌架构、容器网络栈（flannel/kube-proxy/ClusterIP）、DNS 解析链路、存储 local-path、镜像与 containerd、Spring Boot on K8s、kustomize 渲染。
+title: K3s 原理篇：一次请求的完整旅程
+description: 以小白视角讲清 K3s/Kubernetes 的工作机制：集群是什么、一个请求从进门到到达容器的每一步（NodePort→虚拟地址→跨节点隧道）、集群内 DNS、存储、镜像与启动——每一步链接对应的基础知识笔记。
 category: devops
 tags:
   - k3s
   - kubernetes
   - internals
-  - networking
 status: active
 created: 2026-10-13
-updated: 2026-10-13
+updated: 2026-10-14
 ---
 
-# K3s/K8s 组件原理篇：从进程到请求的机制地图
+# K3s 原理篇：一次请求的完整旅程
 
-> 名词不熟先查：[术语表](./k8s-glossary.md)。配套阅读：[事故与踩坑复盘](./k3s-incident-principles.md)、[选型决策记录](./k3s-decision-records.md)。
-> 目标：每个机制讲清"它替你做了什么、在哪儿会坏、坏了长什么样"。
+> **读这篇需要什么背景**：不需要 Kubernetes 经验。每节先讲"它替你做了什么"，再讲"在哪会坏、坏了长什么样"（对应案例见[事故复盘](./k3s-incident-principles.md)）。底层机制链接：
+> [DNS](../networking/dns-name-to-address.md) ｜ [端口：拒绝 vs 超时](../networking/tcp-udp-refused-vs-timeout.md) ｜ [IP 与子网路由](../networking/ip-subnet-and-routing.md) ｜ [NAT 与端口转发](../networking/nat-and-port-forward.md)
 
-## 1. k3s 到底打包了什么
+## 1. K3s 是什么：一个"自带全套家具"的集群发行版
 
-```
-server 节点（单进程 k3s）:
-  kube-apiserver + scheduler + controller-manager + datastore(SQLite/etcd 可选)
-agent（server 也内嵌 agent）:
-  kubelet + containerd(内嵌) + kube-proxy + flannel
-全家桶默认件:
-  CoreDNS / local-path-provisioner / traefik(ingress) / klipper-lb(svclb)
-```
+先说**集群（Kubernetes，常写作 K8s）**是干嘛的：你交给它一份"期望清单"（想要 2 个网关、1 个数据库……），它负责让现实和清单一致——机器不够找机器、程序挂了拉起来、滚动机房也照单执行。你可以把它理解成**一个自动执行部署与运维意愿的管家**。
 
-- 与标准发行版的本质差异：**一个二进制 + SQLite** 换来了"离线 5 分钟起集群"；代价是默认组件是"选好的"——不理解它们就会被默认值坑（见下文 svclb/NodeHosts）。
-- 排障入口：`journalctl -u k3s`（一切进程级问题的第一现场）。
-
-## 2. 容器网络栈（本项目视角的四层）
-
-### 2.1 Pod 网络：veth + Pod CIDR
-
-每 Pod 一对 veth，接入节点 `cni0` 网桥；每个节点分一段 Pod CIDR（默认 `10.42.x.0/24`，**第 3 段即节点号**，看到 Pod IP 就知道它在哪个节点）。
-
-### 2.2 跨节点：flannel VXLAN
-
-- 原理：跨节点 Pod 包被封装成 **UDP 8472** 在节点物理网络里传输（`flannel.1` 接口）；
-- 坏了什么样：跨节点 Pod 互访**超时**（不是 refused）——即使节点互相 ping 通、防火墙关着，**中间网络设备挡 UDP 8472** 照样断；
-- 这就是"双节点引入新问题域"的实体：跨节点不通时，同节点 Pod 正常、跨节点全断，症状极具迷惑性。
-
-### 2.3 Service / ClusterIP：kube-proxy 与 iptables 的转发机制
-
-- ClusterIP 是**虚拟 IP**，没有任何网卡持有它；本机发出的包被 iptables `KUBE-SERVICES` 链 DNAT 成某个 Pod IP；
-- 推论一：**节点本身也能访问 ClusterIP**（iptables 对本机流量同样生效）——排障时不用进 Pod，节点上直接 `curl <ClusterIP>:<port>`；
-- 推论二：多条 DNAT 规则即负载均衡（随机选 Pod），`endpoints` 为空 = Service 有名无实（selector 不匹配时就是这种）；
-- NodePort：iptables 再加一层"节点 IP:30000+ → ClusterIP 链"；k3s 的 svclb（klipper）是给 LoadBalancer 型 Service 起的 hostPort 占位 Pod——没用到可忽略，但 `get pods` 里看到别慌。
-
-### 2.4 一次请求的完整路径
+而 **K3s** 是 K8s 的一个"打包发行版"：把管家和全套家具（运行时 containerd、网络 flannel、DNS、存储插件）塞进**一个可执行文件**，两台低配服务器、断网环境也能 5 分钟起集群。代价是默认家具都是选好的——不认识它们就会被默认值坑（下文逐一介绍）。
 
 ```
-客户端 → 节点IP:30080(NodePort DNAT) → ClusterIP(再 DNAT) → Pod(veth/cni0) → 容器端口
-全部在本节点 iptables 完成（后端 Pod 在别的节点时才走 flannel 封装）
+管理节点（一个 k3s 进程包办）：大脑（API/调度/控制） + 数据账本
+每台机器上的代理人（kubelet）：照清单把容器拉起来、按探针重启
+全家桶默认件：CoreDNS（名字翻译） / local-path（本地目录当磁盘） / traefik（高级路由，可不用）
 ```
 
-## 3. DNS 链路：Pod 内一次解析的过程
+排障入口：管理节点上 `journalctl -u k3s`（进程日志，一切集群级问题的第一现场）。
 
-- Pod 的 `/etc/resolv.conf`：`nameserver 10.43.0.10`（CoreDNS 的 Service）+ `search <ns>.svc.cluster.local svc.cluster.local cluster.local` + **`ndots:5`**；
-- `ndots:5` 的含义：名字里点数 <5 会先拼 search 域逐个试——所以短名（`dbsvr`）能解析，也会带来"多次查询"的隐性成本；
-- CoreDNS 插件链：`kubernetes`（Service/Pod 记录）→ `hosts /etc/coredns/NodeHosts`（k3s 的节点 hosts 同步入口，**不可靠，别依赖**）→ `cache`（约 30s，**负缓存**：NXDOMAIN 也会被缓存！）；
-- ExternalName 的 DNS 语义：只回 CNAME。**CNAME 的目标必须是个可解析的名字**——目标是 IP 字面量时无法合成 A 记录 → 整体 NXDOMAIN。这就是"ExternalName 指 IP 是死路"的原理级原因；
-- 正解 headless Service（clusterIP=None）+ 同名 Endpoints：CoreDNS 对 headless 服务直接回**后端 Pod/手工 Endpoints 的 A 记录**，任何客户端都认。
+## 2. 一次请求的完整旅程（网络部分）
 
-## 4. 存储：local-path 的工作方式
+先补三个地基（各 5 分钟，强烈建议按序读）：
 
-- 原理：PV 就是**节点上某目录**（provisioner 收到 PVC → 在调度节点建目录 → hostPath 挂进 Pod）；
-- 推论：**数据绑死节点**——Pod 重调度到另一节点 = 拿到新空目录（数据没丢，在原节点躺着）；StatefulSet + volumeClaimTemplates 的"每副本独立 PVC"只是让这个事实更明确；
-- 生产升级路径：网络存储 StorageClass（NFS/Ceph/云盘）或节点固定调度（nodeSelector + 反亲和）。
+1. [端口：拒绝 vs 超时](../networking/tcp-udp-refused-vs-timeout.md)——敲门没人应有两种含义；
+2. [NAT 与端口转发](../networking/nat-and-port-forward.md)——"总机+转接"的把戏；
+3. [IP 与子网路由](../networking/ip-subnet-and-routing.md)——为什么跨网段要走路由。
 
-## 5. 镜像与 containerd
+然后跟着一个请求走：用户访问 `http://服务器IP:30080`。
 
-- k3s 内嵌 containerd（**不是 docker**）：操作入口 `k3s ctr -n k8s.io images ...`（注意命名空间 `k8s.io`，忘加 = 看不到任何镜像）；
-- `docker save`/`ctr images export` 的 tar 是 OCI 镜像打包（manifest+layers），`ctr import` 原样导入——所以"tar 再包一层 zip"纯属给下载方加工序；
-- imagePullPolicy 语义：`IfNotPresent` = 本地有就不拉，**本地没有就去 registry 拉**（离线环境 = 去 Docker Hub 超时 → ImagePullBackOff 挂死）；
-- k3s 会在磁盘紧张时 **GC 未使用镜像**——回滚前先 `images ls` 确认旧版本还在。
+**第一跳：NodePort（小区大门）**。K8s 在**每台**机器上都开了 30080 这个门（所以访问任意一台都行），门后要做转接——这正是[端口转发（DNAT）](../networking/nat-and-port-forward.md)。
 
-## 6. Spring Boot on Kubernetes
+**第二跳：ClusterIP（总机号）**。转接规则的目标是一个"虚拟地址"（ClusterIP）——它**不属于任何网卡**，只存在于内核的转接规则表里（[NAT 笔记](../networking/nat-and-port-forward.md)里"总机号码只是规则表里的记号"）。规则再把包转给某一个真实容器。
 
-### 6.1 类加载：三种 launcher 的差异
+**第三跳：跨节点隧道（flannel/VXLAN）**。如果选中的容器在另一台机器上，包会被**封装成 UDP 8472** 的包裹走机器之间的网络（术语 VXLAN 隧道）。**坑**：两台机器互相 ping 得通、防火墙都关着，但中间设备只要丢 UDP 8472 的包，跨机器的容器就全断——而同机器的容器一切正常，症状极具迷惑性（真实案例见[事故九](./k3s-incident-principles.md)）。
 
-- `JarLauncher`（fat jar 默认）：从 jar 内 `BOOT-INF/lib` 加载全部依赖，`java -jar` 即可；
-- `PropertiesLauncher`（ZIP 布局）：依赖**不在 jar 内**，启动时读 `loader.path`（系统属性或 loader.properties）找外部 lib——**参数缺失 = 零依赖加载 = NoClassDefFoundError**；
-- 显式 `-cp jar:lib/* 主类`：绕开 launcher，类路径完全由你指定——对布局免疫，这就是统一入口选它的原因。
+**验证方法**（不用进容器）：从节点直接访问虚拟地址 `curl http://<ClusterIP>:<端口>`——因为转接规则对机器自身也生效，通=网络链路好，不通=查规则/查对端容器。
 
-### 6.2 actuator health 的两级结构
+## 3. 集群内的 DNS：名字怎么翻译
 
-- 聚合端点 `/actuator/health` = 所有 indicator 投票（DB、Redis、注册中心客户端…任何一个 DOWN → 503）；
-- **health group**（`/actuator/health/liveness|readiness`）：Spring Boot 在 K8s 环境**自动启用**，只含存活/就绪状态本身，不含外部组件——这就是探针必须打组端点的原理（自愈不能被外部依赖劫持）。
+> 地基：[DNS：名字是怎么变成地址的](../networking/dns-name-to-address.md)
 
-### 6.3 JVM 的容器感知
+集群里所有容器都使用同一个内置 DNS（CoreDNS）。容器里查 `dbsvr` 这个短名时，DNS 会自动补全后缀逐个试（这是"短名能用的代价：多查几次"），最终要么返回**虚拟地址**（Service），要么——对"无虚拟地址的服务"（headless）——**直接返回后端真实地址**（这正是[事故四](./k3s-incident-principles.md)里引用外部数据库的正确姿势）。
 
-- JVM ≥10 默认 `UseContainerSupport`：读 **cgroup 限制**（而非宿主机内存）作为默认堆依据；
-- `MaxRAMPercentage` 以 cgroup limit 为基数取百分比——limit 变了堆自动跟着变，这是"百分比方案根治 OOM 族"的机制；
-- 但 Metaspace/堆外**不在百分比管辖内**，仍需显式上限——三项之和 < limit 的约束永远成立。
+两个实战要点：**改完解析等 30 秒**（负缓存，DNS 笔记讲过）；**ExternalName 类型的本质是 CNAME**，填 IP 字面量必死（原理在[DNS 笔记](../networking/dns-name-to-address.md)的 CNAME 一节）。
 
-## 7. kustomize 渲染原理
+## 4. 存储：local-path 的真相是"机器上的一个目录"
 
-- `resources` 树形加载 → `images/replicas` 等 transformer 改字段 → patches 按**键**合并（containers 按 name、env 按 name）——所以 patch env 时同名覆盖、异名追加，不会误伤既有变量；
-- **安全限制**：overlay 不得引用自身目录之外的**单个文件**（路径逃逸防护）——要么引整个目录，要么复制；
-- `kubectl apply -k` = 先在本机渲染成完整对象再提交——**渲染结果永远可先审后用**（`kubectl kustomize > a.yaml` 进 diff），这是它可评审性的来源。
+K8s 的存储申请单叫 PVC（"我要一块 10G 的盘"）。K3s 默认的分配器 local-path 的做法非常朴素：**在容器所在那台机器上建一个目录**，挂进容器。
 
-## 8. 快速定位表：症状 → 机制层
+**推论（坑）**：数据从此**绑死在那台机器**——容器被调度到另一台机器时，拿到的是那边的新空目录（数据没丢，躺在原机器上）。测试环境能接受；要求"容器随便漂、数据跟着走"就要换网络存储。
 
-| 症状 | 指向的机制层 | 一行验证 |
+## 5. 镜像与启动
+
+**镜像**：一个"打包好的、可直接运行的程序压缩包"。K3s 内置运行时 containerd（**不是 Docker**——机器上没有 docker 命令是正常的），操作命令是 `k3s ctr -n k8s.io images ...`（`-n k8s.io` 是它的储藏室编号，忘写=看起来什么都没有）。
+
+**拉取策略的坑**：默认策略 IfNotPresent（"本地有就不下载"）的后半句是——**本地没有就去远端下载**。离线环境=永远超时挂起，这就是[事故三](./k3s-incident-principles.md)（镜像漏分发一台，副本挂 5 小时）的机制根源。
+
+**Java 程序的启动**：容器入口怎么写、为什么 `java -cp` 比 `java -jar` 稳，见[classpath 白话](../backend/java-classpath-basics.md)；内存三块与容器限额，见[JVM 内存白话](../backend/jvm-memory-anatomy.md)。
+
+## 6. 健康检查：进程活着 ≠ 服务可用
+
+探针三件套（背景见[事故五](./k3s-incident-principles.md)）：
+
+| 探针 | 回答的问题 | 挂了会怎样 |
 |---|---|---|
-| 跨节点 Pod 互访超时 | flannel VXLAN(UDP 8472) | 两节点互测 8472/udp |
-| ClusterIP 节点上 curl 卡死 | kube-proxy iptables / 后端在故障节点 | `get endpoints` + 直连 PodIP |
-| 名字解析不到（刚改过） | CoreDNS 负缓存 | 等 30~60s 再试 |
-| 名字永远解析不到（ExternalName 指 IP） | CNAME 无 A 可合成 | 换 headless+Endpoints |
-| 改配置不生效 | subPath 挂载无 watch | `rollout restart` |
-| 缺镜像节点副本挂死 | IfNotPressed→远端拉取 | 逐节点 `ctr images ls \| grep` |
-| 副本漂移后数据"丢了" | local-path 绑节点 | 看 PV 所在节点 |
+| liveness | 进程还活着吗 | 杀掉重启 |
+| readiness | 能接客了吗 | 暂时不给它分流 |
+| startup | 启动期保护 | 启动慢的程序不被前两者误杀 |
+
+Spring Boot 程序在 K8s 里默认提供分组地址（`/actuator/health/liveness|readiness`），**探针永远打分组地址**，不打掺入外部依赖的综合报告。
+
+## 7. 配置渲染：kustomize 在干嘛
+
+部署清单常"多环境大同小异"：kustomize 的做法是**底稿（base）+ 每环境一张差异页（overlay）**，渲染成最终清单再交给 K8s。两个实用点：
+
+- 渲染结果可以**先看再交**（`kubectl kustomize` 输出可读、可 diff、可评审）——这是"配置也可代码评审"的根基；
+- 差异页按"名字"合并修改：容器按名字、环境变量按变量名——同名覆盖、异名追加，不会误伤既有项。**注意**：差异页不能引用自己目录之外的单个文件（安全限制），要引用就引整个目录或复制过来。
+
+## 8. 速查：症状 → 机制层 → 验证
+
+| 症状 | 指向 | 一行验证 |
+|---|---|---|
+| 跨机器容器互访超时，同机器正常 | 跨机隧道（UDP 8472）被挡 | 两机器互测 8472/udp |
+| 虚拟地址访问卡死 | 转接规则/后端容器故障 | `get endpoints` 看后端；直连容器地址对照 |
+| 刚改的名字解析不到 | DNS 负缓存 | 等 30~60 秒 |
+| 名字永远解析不到（ExternalName 填了 IP） | CNAME 无法指向 IP | 换 headless+Endpoints 写法 |
+| 改配置不生效 | 单文件挂载无热更新 | 重启对应服务 |
+| 某台机器的副本拉镜像挂死 | 本机无镜像→去公网拉→超时 | 逐台 `ctr images ls \| grep` |
+| 容器漂移后"数据没了" | local-path 绑机器 | 看数据卷在原机器 |
 
 ## Related
 
-- [Kubernetes / 容器交付 术语表](./k8s-glossary.md)
-- [K3s 实战事故与原理](./k3s-incident-principles.md)
-- [K3s 体系选型决策记录](./k3s-decision-records.md)
-- [实践项目：容器化交付体系的搭建](../projects/medical-it-delivery-practice/README.md)
+- [事故复盘](./k3s-incident-principles.md) ｜ [选型决策记录](./k3s-decision-records.md) ｜ [术语表](./k8s-glossary.md) ｜ [项目实践](../projects/medical-it-delivery-practice/README.md)
+- 基础底座：[DNS](../networking/dns-name-to-address.md) ｜ [拒绝 vs 超时](../networking/tcp-udp-refused-vs-timeout.md) ｜ [子网路由](../networking/ip-subnet-and-routing.md) ｜ [NAT](../networking/nat-and-port-forward.md) ｜ [JVM 内存](../backend/jvm-memory-anatomy.md) ｜ [classpath](../backend/java-classpath-basics.md)

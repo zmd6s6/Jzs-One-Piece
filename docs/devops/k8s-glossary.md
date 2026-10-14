@@ -13,7 +13,7 @@ updated: 2026-10-13
 
 # Kubernetes / 容器交付 术语表
 
-> 读文章遇到不认识的词，先来这里查。每条给"一句话解释"，必要时补"容易误解的点"。
+> 读文章遇到不认识的词，先来这里查。想系统补底层知识，按域走：[计算机网络](../networking/README.md)（DNS/端口/路由/NAT）、[后端](../backend/README.md)（JVM 内存/classpath/Oracle 解析）。每条给"一句话解释"，必要时补"容易误解的点"。
 > 相关文章：[事故与原理](./k3s-incident-principles.md)、[选型决策记录](./k3s-decision-records.md)、[组件原理篇](./k3s-internals.md)、[实践项目](../projects/medical-it-delivery-practice/README.md)。
 
 ## 一、集群与组件
