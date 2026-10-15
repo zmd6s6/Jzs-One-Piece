@@ -64,8 +64,31 @@ for (const path of paths) {
   if (!/^#\s+.+/m.test(content)) errors.push(name + ': missing H1 heading');
   if (!/^## 修订记录$/m.test(content)) errors.push(name + ': missing revision history section');
   if (!/^\|\s*日期\s*\|\s*作者\s*\|\s*变更\s*\|/m.test(content)) errors.push(name + ': missing revision history table header');
-  if (!/^\|\s*2026-10-15\s*\|\s*zmd6s6\s*\|/m.test(content) && name.includes('/networking/')) {
-    errors.push(name + ': missing October 15 revision entry');
+  // Revision rows must reflect the current updated date, not a hard-coded rollout date.
+  const updated = meta.updated instanceof Date ? meta.updated.toISOString().slice(0, 10) : String(meta.updated);
+  const recordedDates = [...content.matchAll(/^\|\s*(\d{4}-\d{2}-\d{2})\s*\|\s*([^|]+)\|/gm)];
+  if (!recordedDates.some(match => match[1] === updated)) {
+    errors.push(name + ': updated date not found in append-only revision history');
+  }
+  const isNetworkLesson = path.startsWith(networkRoot + sep) &&
+    !name.endsWith('/README.md') &&
+    !['docs/networking/glossary.md', 'docs/networking/reading-list.md'].includes(name) &&
+    meta.status !== 'deprecated';
+  if (isNetworkLesson) {
+    const firstSection = content.match(/^##\s+(.+)$/m)?.[1] || '';
+    if (!/先|从|生活|问题|为什么|情景|情境|疑问|第一件|实际|真实/.test(firstSection)) {
+      errors.push(name + ': first teaching section must start from a familiar question or scenario, not a jargon list');
+    }
+    if (!/^## 相关知识$/m.test(content)) {
+      errors.push(name + ': lesson needs links to prerequisite or adjacent foundational knowledge');
+    }
+    if (!/观察|验证|自测|验收|动手|推演|自己计算|最小实验/.test(content)) {
+      errors.push(name + ': lesson lacks a low-risk observable example or learner check');
+    }
+  }
+  if (name === 'docs/networking/foundations/first-network-request.md' &&
+      /## .*典型 HTTPS 请求的顺序/.test(content)) {
+    errors.push(name + ': do not teach the full HTTPS protocol stack before its prerequisites');
   }
   const pattern = /!?\[[^\]]*\]\(([^)]+)\)/g;
   for (const m of content.matchAll(pattern)) {
