@@ -38,7 +38,7 @@ updated: 2026-10-15
 ## 真正动手的实践资源
 | 资源 | 实践价值 | 建议配套 |
 |---|---|---|
-| [Kurose / Ross 官方 Wireshark Labs（第 9 版）](https://gaia.cs.umass.edu/kurose_ross/wireshark.php) | 有入门、HTTP、DNS、TCP、UDP、IP、NAT、ARP、DHCP、TLS 等作业和抓包样本 | 第 3 周起每阶段做一个实验；遵守课程版权说明 |
+| [Kurose / Ross 官方 Wireshark Labs（第 9 版）](https://gaia.cs.umass.edu/kurose_ross/wireshark.php) | 有入门、HTTP、DNS、TCP、UDP、IP、NAT、ARP、DHCP、TLS 等作业和抓包样本 | 完成网络基础概念后，每个阶段选择相关实验；遵守课程版权说明 |
 | [Wireshark User's Guide](https://www.wireshark.org/docs/wsug_html/) | 捕获接口、显示过滤器、Follow Stream、统计 | 抓包前读 Capture/Display Filters |
 | [Wireshark Capture Filters](https://wiki.wireshark.org/CaptureFilters) | 避免搞混捕获与显示过滤语法 | 配套[抓包笔记](./operations/packet-capture-basics.md) |
 | [Everything curl](https://everything.curl.dev/) | HTTP、DNS、TLS、超时、代理的命令实践 | 每次排障保留完整命令和脱敏输出 |
@@ -71,3 +71,4 @@ updated: 2026-10-15
 |---|---|---|
 | 2026-10-15 | zmd6s6 | 创建、建立学习入口和参考资料 |
 | 2026-10-15 | zmd6s6 | 修正学习资料索引跨项目域链接 |
+| 2026-10-15 | zmd6s6 | 移除资料表内按周学习建议，改为知识前置与阶段实践 |
