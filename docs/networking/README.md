@@ -16,28 +16,28 @@ updated: 2026-10-15
 
 打开网页、连接服务、客户端与服务端交换数据，这些表面上不同的行为，最终都要依靠一条真实的数据传输路径。**本地图只负责回答两件事：下一步学什么、怎样证明已经学会。** 详细机制在独立知识页，实际项目练习放在项目实践域。
 
-## 按路径学：从零基础连续推进
+## 按路径学：先建立生活直觉，再逐步掌握技术
 
 | 阶段 | 学习目标 | 建议先打开的入口 |
 |---|---|---|
-| 01 网络直觉与分层 | 认识客户端/服务端、协议、数据封装以及域名/IP/MAC/端口的不同职责 | [第一阶段：网络世界的基本规则](./foundations/README.md) |
-| 02 局域网与接入 | 解释交换机、ARP、DHCP、Wi-Fi 如何参与本地网络通信 | [第二阶段：局域网与网络接入](./lan/README.md) |
+| 01 网络直觉与分层 | 从网页获取内容认识两端通信，再理解 bit、byte、封装和不同网络地址的职责 | [第一阶段：网络世界的基本规则](./foundations/README.md) |
+| 02 局域网与接入 | 从真实家庭设备入手，逐步理解交换机、ARP、DHCP 与 Wi-Fi | [第二阶段：局域网与网络接入](./lan/README.md) |
 | 03 IP 与路由 | 计算子网、寻找默认网关，理解 ICMP、NAT 与 IPv6 | [第三阶段：跨网络寻址与路由](./internet/README.md) |
 | 04 TCP 与 UDP | 能读懂握手、关闭、ACK、重传、窗口与拥塞现象 | [第四阶段：传输层 TCP 与 UDP](./transport/README.md) |
-| 05 应用层与安全连接 | 拆解 DNS、HTTP、TLS、HTTP/2/3 和 WebSocket/gRPC 的职责 | [第五阶段：应用层协议与安全连接](./application/README.md) |
+| 05 应用层与安全连接 | 先独立学 DNS、HTTP 和 TLS，最后复盘 HTTPS 请求整条链路 | [第五阶段：应用层协议与安全连接](./application/README.md) |
 | 06 网络编程 | 理解 Socket、消息边界、非阻塞 IO，并完成跨语言通信 | [第六阶段：Socket 与网络编程](./programming/README.md) |
 | 07 抓包与排障 | 用证据把 DNS、路由、TCP、TLS、HTTP 与应用故障区分开 | [第七阶段：网络故障定位](./operations/README.md) |
 | 08 性能、安全与容器网络 | 从吞吐/尾延迟、安全边界与容器网络角度评价通信架构 | [第八阶段：性能与云原生通信](./advanced/README.md) |
 
-每个阶段按对应入口的**“按路径学”**顺序阅读，遇到第一次出现的术语查[基础术语表](./glossary.md)；不要求按照固定时间表推进。
+**真正零基础的阅读规则**：第一次遇到某个名词，不必先记缩写；先理解它解决的生活问题、阅读正文中的例子，再自行观察一次。学到后面的 TCP、HTTP、TLS 时，再回头复盘完整网页请求。每个阶段按对应入口的**“按路径学”**顺序学习，随时使用[有例子的术语表](./glossary.md)。
 
 ### 第一阶段：网络直觉与分层
 
-[从浏览器请求理解整个链路](./foundations/first-network-request.md) → [网络为什么分层和封装](./foundations/layers-and-encapsulation.md) → [域名、IP、MAC 与端口各代表什么](./foundations/four-kinds-of-address.md)。
+[网页是怎样从远方来到浏览器的（先不讲协议）](./foundations/first-network-request.md) → [电脑中的比特、字节和数据包](./foundations/bits-bytes-and-packets.md) → [网络为什么要分工与封装](./foundations/layers-and-encapsulation.md) → [域名、IP、MAC 与端口各解决什么问题](./foundations/four-kinds-of-address.md)。
 
 ### 第二阶段：局域网与接入
 
-[交换机、ARP 和以太网](./lan/ethernet-switch-arp.md) → [DHCP 自动分配地址](./lan/dhcp-automatic-addressing.md) → [Wi-Fi 无线链路](./lan/wifi-and-ethernet.md)。
+[真实家庭网络里有哪些设备](./lan/home-network-devices.md) → [交换机、ARP 和以太网](./lan/ethernet-switch-arp.md) → [DHCP 自动分配地址](./lan/dhcp-automatic-addressing.md) → [Wi-Fi 无线链路](./lan/wifi-and-ethernet.md)。
 
 ### 第三阶段：IP 与路由
 
@@ -49,7 +49,7 @@ updated: 2026-10-15
 
 ### 第五阶段：应用层与安全连接
 
-[DNS 查询与缓存](./dns-name-to-address.md) → [HTTP 请求与响应](./application/http-core.md) → [HTTPS/TLS](./application/https-tls.md) → [HTTP/1.1、HTTP/2 和 HTTP/3](./application/http-versions.md) → [WebSocket 与 gRPC](./application/websocket-grpc.md)。
+[DNS 查询与缓存](./dns-name-to-address.md) → [HTTP 请求与响应](./application/http-core.md) → [HTTPS/TLS](./application/https-tls.md) → [HTTP/1.1、HTTP/2 和 HTTP/3](./application/http-versions.md) → **[此时才复盘完整 HTTPS 请求顺序](./application/browser-request-walkthrough.md)** → [WebSocket 与 gRPC](./application/websocket-grpc.md)。
 
 ### 第六阶段：网络编程
 
@@ -67,16 +67,16 @@ updated: 2026-10-15
 
 | 阶段 | 必须独立完成的验收动作 | 达标标准 |
 |---|---|---|
-| 01 | 画出一次网页请求的主要路径；区分域名、IP、MAC、端口 | 能说出每个标识解决哪个问题，准确标出封装的主要层次 |
-| 02 | 查看本机网卡地址、邻居缓存和默认网关 | 能解释一次 ARP 查找为何出现，以及交换机与路由器职责的区别 |
+| 01 | 不用协议缩写讲清“客户端提出需求、服务器回应”；解释 bit/byte 并区分四类网络标识 | 能讲一个真实例子，解释分工与通信双方，不把 IP、MAC、端口混成一回事 |
+| 02 | 从家中设备或网络设置找到网卡、无线接入点、网关；观察一次邻居缓存 | 能说明交换机、路由器、Wi-Fi 接入点做什么，理解 ARP 何时出现 |
 | 03 | 计算 `192.168.1.40/27` 和 `10.20.30.70/26` 的网络地址；查看路由表 | 算对网络范围，能解释本地通信与跨网段通信的下一跳 |
 | 04 | 识别一段 SYN/SYN-ACK/ACK 抓包，解释 ACK、FIN、RST 与重传 | 不把连接成功等同于应用成功；能区分接收窗口与拥塞窗口 |
-| 05 | 用 curl 观察一次 HTTPS 请求；判断 DNS、TCP、TLS、HTTP 各环节是否通过 | 能准确解释 404、连接拒绝、证书验证失败属于不同阶段 |
+| 05 | 先独立解释 DNS、HTTP、TLS，再画出它们怎样参与一次 HTTPS 访问，并用浏览器和 curl 对照 | 不背流程图也能解释 DNS 失败、连接拒绝、证书异常、404 的不同职责边界 |
 | 06 | 定义 4 字节大端长度前缀并实现跨语言发送/接收 | 连续或拆分发送消息都能正确还原；能解释 `recv()` 可能读不全 |
 | 07 | 面对“服务连不上”，依次收集 DNS、路由、端口、TLS 和应用证据 | 提交完整的“现象 → 假设 → 验证 → 排除 → 结论”过程，而非凭猜测下结论 |
 | 08 | 针对吞吐不足、P99 偏高或容器网络隔离，提出排查路径 | 能说出要观察哪些指标、如何验证瓶颈、优化措施的副作用 |
 
-**升级条件**：不看答案、能解释机制、能拿到可重复的证据并完成本阶段验收，即可进入下一阶段。如果只记住术语却无法解释抓包/命令结果，应回到前一阶段补齐。
+**升级条件**：不看答案、能解释机制、能拿到可重复的证据并完成本阶段验收，即可进入下一阶段。如果只记住术语却无法用具体例子解释或观察，回到该术语首次出现的知识页；**不鼓励靠背诵协议顺序通过验收**。
 
 ## 按症状找：把概念应用到具体问题
 
@@ -108,3 +108,4 @@ updated: 2026-10-15
 | 2026-10-15 | zmd6s6 | 扩展为 16 周零基础到架构实战路线，接入原有四篇与实验、资料索引 |
 | 2026-10-15 | zmd6s6 | 按 AGENTS.md 将项目实践入口从基础域移除，保留纯知识验收 |
 | 2026-10-15 | zmd6s6 | 去除时间安排，统一为八阶段与逐阶段验收；整合旧知识文档的导航 |
+| 2026-10-15 | zmd6s6 | 重排零基础依赖：先认识数据和真实设备，后学习协议，末尾复盘完整 HTTPS 请求 |
