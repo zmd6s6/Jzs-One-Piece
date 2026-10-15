@@ -30,7 +30,7 @@ updated: 2026-10-15
 
 ## 按决策查
 - 先验证同步阻塞实现正确性，再引入 Reactor/Netty；“异步”不是自动更快。
-- 运行代码见 [动手实验库](../../projects/networking-labs/README.md)。
+- 先验证本地长度前缀 TCP 分帧能正确解析多条和不完整的字节流。
 
 ## 相关知识
 - [总学习地图](../README.md)

@@ -1,14 +1,14 @@
 ---
 title: NAT 与端口转发：公司总机是怎么工作的
 author: zmd6s6
-description: 用"前台总机"的类比讲清 NAT、DNAT、端口转发——Kubernetes 的 Service/NodePort 用的正是这套机制。
+description: 用"前台总机"的类比讲清 NAT、DNAT、端口转发——许多 NAT 网关和容器网络转发也会用到这类地址转换机制。
 category: networking
 tags:
   - nat
   - fundamentals
 status: active
 created: 2026-10-14
-updated: 2026-10-14
+updated: 2026-10-15
 ---
 
 # NAT 与端口转发：公司总机是怎么工作的
@@ -25,9 +25,9 @@ updated: 2026-10-14
 | **DNAT**（改目标） | 打总机的人被转接到某台分机 | 包到达时，把"目标地址/端口"改写成内部某台机器，再送过去 |
 | **端口转发** | "拨总机转 8080 找工程部" | DNAT 的具体形式：外部访问 `总机IP:某端口` → 固定转给 `内网某机器:某端口`（路由器里的"虚拟服务器/端口映射"就是它） |
 
-**实现转接的"前台"通常是一张规则表**。Linux 上这张表由内核的 **iptables**（一个包过滤/改写规则引擎）维护，规则形如"凡是打到 10.43.0.10:8848 的包，改写成发给 10.42.1.5:8848"。
+**实现转接的"前台"通常是一张规则表**。Linux 上可能使用 **iptables / nftables** 等规则配置接口，具体由内核和网络组件实现，规则形如"凡是打到 10.43.0.10:8848 的包，改写成发给 10.42.1.5:8848"。
 
-> 一个重要推论：**"总机号码"本身不属于任何一台机器**。它只是规则表里的一个记号——这就是为什么你 ping 一个"虚拟 IP"可能 ping 不通（ping 不走那张转接表），但访问它的端口却通。
+> 一个重要推论：**"总机号码"本身不属于任何一台机器**。它只是规则表里的一个记号——因此某些虚拟 IP 可能只对特定协议与端口进行转发，出现“TCP 服务可访问但 ICMP 无响应”的情况；是否支持 ICMP 仍应根据具体实现判断。
 
 ## 自己动手看一眼
 
@@ -36,17 +36,17 @@ updated: 2026-10-14
 iptables -t nat -L -n | head -20
 ```
 
-能看到形如 `DNAT tcp ddd:10.43.0.10:8848 to:10.42.1.5:8848` 的行——一行就是一条"总机转接规则"。
+如果系统使用 iptables NAT 规则且已有对应配置，可能看到 DNAT 等记录；若系统使用 nftables、eBPF 等不同实现，不能据此命令无输出推断“没有地址转换”。
 
-## 实战应用
+## 相关知识
 
-Kubernetes 把这套机制用到了极致，理解 NAT 就能秒懂 K8s 网络的一半：
-
-- [一次请求的完整旅程](../devops/kubernetes/internals/request-journey.md)——ClusterIP 就是"总机号"（虚拟 IP + iptables DNAT 规则），NodePort 就是"拨总机转 30000+"；
-- [事故复盘](../projects/medical-platform/incidents/README.md)——"ClusterIP 从节点上也能访问"正是规则的生效范围决定的。
+- [IP、子网和路由](./ip-subnet-and-routing.md)
+- [网络命名空间与容器通信](./advanced/container-networking.md)
+- [端口拒绝和超时](./tcp-udp-refused-vs-timeout.md)
 
 ## 修订记录
 
 | 日期 | 作者 | 变更 |
 |---|---|---|
 | 2026-10-14 | zmd6s6 | 创建（含基础知识串联） |
+| 2026-10-15 | zmd6s6 | 按 AGENTS.md 分离基础机制和项目案例；修正泛化或易误导表述 |
