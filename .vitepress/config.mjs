@@ -46,8 +46,11 @@ function items(path) {
     .filter(entry => !entry.name.startsWith('.'))
     .sort((a, b) => {
       // Root network sidebar follows the learning path, rather than alphabetic folders.
-      if (path === 'docs/networking' && a.isDirectory() && b.isDirectory()) {
-        return networkingStageOrder.indexOf(a.name) - networkingStageOrder.indexOf(b.name)
+      if (path === 'docs/networking') {
+        if (a.isDirectory() !== b.isDirectory()) return a.isDirectory() ? -1 : 1
+        if (a.isDirectory()) {
+          return networkingStageOrder.indexOf(a.name) - networkingStageOrder.indexOf(b.name)
+        }
       }
       return a.name.localeCompare(b.name, 'en', { numeric: true })
     })
