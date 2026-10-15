@@ -1,7 +1,7 @@
 ---
-title: 计算机网络：从零到工程实践的 16 周线性学习路径
+title: 计算机网络：零基础到工程实践的分阶段学习地图
 author: zmd6s6
-description: 按零前置原则，从网络分层与寻址、TCP/IP、HTTP/TLS 到 Java/C++/Qt 网络编程、抓包排障和网络架构。
+description: 不按日历安排学习；按照网络直觉、局域网、路由、TCP/UDP、应用协议、网络编程、故障排查和架构进阶逐步验收。
 category: networking
 tags:
   - networking
@@ -12,126 +12,99 @@ created: 2026-10-14
 updated: 2026-10-15
 ---
 
-# 计算机网络：从零到工程实践的 16 周线性学习路径
+# 计算机网络：零基础到工程实践的分阶段学习地图
 
-> **目标**：从“只能调用 HTTP/Socket API”走向“能解释每一层发生了什么、能抓包验证、能独立设计跨语言通信与排障”。默认完全不懂计算机网络专业名词。每个新术语先读现象与类比，再读机制、执行最小实验、回答验收题。
+打开网页、连接服务、客户端与服务端交换数据，这些表面上不同的行为，最终都要依靠一条真实的数据传输路径。**本地图只负责回答两件事：下一步学什么、怎样证明已经学会。** 详细机制在独立知识页，实际项目练习放在项目实践域。
 
-## 先读这里：一条唯一主线
+## 按路径学：从零基础连续推进
 
-- 建议每周 **5–7 小时**：概念阅读 2 小时、动手 2–3 小时、独立复盘 1–2 小时。
-- **先打地基、后做高阶实验**；有研发经验也不要直接跳到 epoll / Netty 参数。
-- 一周内容读不懂就顺延；“16 周”是节奏建议，不是必须完成的硬期限。
-- 第一次学每篇只抓住“解决什么问题、输入输出是什么、在什么层、如何验证”；第二次复盘再读细节。
+| 阶段 | 学习目标 | 建议先打开的入口 |
+|---|---|---|
+| 01 网络直觉与分层 | 认识客户端/服务端、协议、数据封装以及域名/IP/MAC/端口的不同职责 | [第一阶段：网络世界的基本规则](./foundations/README.md) |
+| 02 局域网与接入 | 解释交换机、ARP、DHCP、Wi-Fi 如何参与本地网络通信 | [第二阶段：局域网与网络接入](./lan/README.md) |
+| 03 IP 与路由 | 计算子网、寻找默认网关，理解 ICMP、NAT 与 IPv6 | [第三阶段：跨网络寻址与路由](./internet/README.md) |
+| 04 TCP 与 UDP | 能读懂握手、关闭、ACK、重传、窗口与拥塞现象 | [第四阶段：传输层 TCP 与 UDP](./transport/README.md) |
+| 05 应用层与安全连接 | 拆解 DNS、HTTP、TLS、HTTP/2/3 和 WebSocket/gRPC 的职责 | [第五阶段：应用层协议与安全连接](./application/README.md) |
+| 06 网络编程 | 理解 Socket、消息边界、非阻塞 IO，并完成跨语言通信 | [第六阶段：Socket 与网络编程](./programming/README.md) |
+| 07 抓包与排障 | 用证据把 DNS、路由、TCP、TLS、HTTP 与应用故障区分开 | [第七阶段：网络故障定位](./operations/README.md) |
+| 08 性能、安全与容器网络 | 从吞吐/尾延迟、安全边界与容器网络角度评价通信架构 | [第八阶段：性能与云原生通信](./advanced/README.md) |
 
-## 第一阶段：知道网络里都有哪些角色（第 1–2 周）
+每个阶段按对应入口的**“按路径学”**顺序阅读，遇到第一次出现的术语查[基础术语表](./glossary.md)；不要求按照固定时间表推进。
 
-1. [01 浏览器打开一个网页，经历了哪些环节](./foundations/first-network-request.md)
-2. [02 分层与封装：HTTP、TCP、IP、Ethernet 的关系](./foundations/layers-and-encapsulation.md)
-3. [03 域名、IP、MAC、端口：四种不同的身份](./foundations/four-kinds-of-address.md)
-4. [04 交换机、以太网帧与 ARP](./lan/ethernet-switch-arp.md)
-5. [05 DHCP 如何分配 IP、网关、DNS](./lan/dhcp-automatic-addressing.md)
-6. [06 Wi-Fi 为什么信号满格还可能卡](./lan/wifi-and-ethernet.md)
+### 第一阶段：网络直觉与分层
 
-**本阶段自测**：在本机启动 HTTP 服务并通过 curl 请求，通过条件：能画出“客户端 → 地址解析 → 网络 → 服务端 → 响应”，说出四种地址的不同职责。
+[从浏览器请求理解整个链路](./foundations/first-network-request.md) → [网络为什么分层和封装](./foundations/layers-and-encapsulation.md) → [域名、IP、MAC 与端口各代表什么](./foundations/four-kinds-of-address.md)。
 
-## 第二阶段：明白包是如何跨网络送达的（第 3–4 周）
+### 第二阶段：局域网与接入
 
-7. [07 IP、子网、路由与默认网关（已有知识页）](./ip-subnet-and-routing.md)
-8. [08 CIDR：/24、/27 到底如何计算](./internet/subnet-cidr-calculation.md)
-9. [09 ICMP、ping、traceroute 真正在测什么](./internet/icmp-and-path-probing.md)
-10. [10 NAT 与端口转发（已有知识页）](./nat-and-port-forward.md)
-11. [11 IPv6：地址族、邻居发现和双栈](./internet/ipv6-first-look.md)
+[交换机、ARP 和以太网](./lan/ethernet-switch-arp.md) → [DHCP 自动分配地址](./lan/dhcp-automatic-addressing.md) → [Wi-Fi 无线链路](./lan/wifi-and-ethernet.md)。
 
-**本阶段自测**：分别观察 DNS、子网路由、ARP 和 ICMP，通过条件：能算网络地址/广播地址，区分本地目标与下一跳。
+### 第三阶段：IP 与路由
 
-## 第三阶段：真正理解 TCP，而不只会背三次握手（第 5–7 周）
+[IP、子网、CIDR 计算、网关与路由（合并后的主知识页）](./ip-subnet-and-routing.md) → [ICMP、ping 与 traceroute](./internet/icmp-and-path-probing.md) → [NAT、SNAT/DNAT 与端口转发](./nat-and-port-forward.md) → [IPv6](./internet/ipv6-first-look.md)。
 
-12. [12 TCP 与 UDP：字节流和数据报](./transport/tcp-vs-udp.md)
-13. [13 端口、拒绝与超时（已有知识页）](./tcp-udp-refused-vs-timeout.md)
-14. [14 三次握手、断连、RST、TIME_WAIT](./transport/tcp-connection-lifecycle.md)
-15. [15 序列号、ACK、重传、接收窗口](./transport/tcp-reliability.md)
-16. [16 流量控制、拥塞控制、RTT 与 BDP](./transport/tcp-congestion-control.md)
+### 第四阶段：TCP 与 UDP
 
-**本阶段自测**：抓取一次 TCP 握手与关闭过程，通过条件：拿出一段抓包，解释标志位与序列号，理解 TCP 不保存应用消息边界。
+[TCP 和 UDP 的承诺](./transport/tcp-vs-udp.md) → [端口拒绝与超时](./tcp-udp-refused-vs-timeout.md) → [TCP 握手和连接关闭](./transport/tcp-connection-lifecycle.md) → [TCP 可靠传输](./transport/tcp-reliability.md) → [流量与拥塞控制](./transport/tcp-congestion-control.md)。
 
-## 第四阶段：应用为什么要用 DNS/HTTP/TLS（第 8–9 周）
+### 第五阶段：应用层与安全连接
 
-17. [17 DNS：名字如何得到地址（已有知识页）](./dns-name-to-address.md)
-18. [18 HTTP 方法、状态码、头、连接复用](./application/http-core.md)
-19. [19 HTTPS、TLS、证书校验](./application/https-tls.md)
-20. [20 HTTP/1.1、HTTP/2、HTTP/3 与 QUIC](./application/http-versions.md)
-21. [21 WebSocket、gRPC 与调用语义](./application/websocket-grpc.md)
+[DNS 查询与缓存](./dns-name-to-address.md) → [HTTP 请求与响应](./application/http-core.md) → [HTTPS/TLS](./application/https-tls.md) → [HTTP/1.1、HTTP/2 和 HTTP/3](./application/http-versions.md) → [WebSocket 与 gRPC](./application/websocket-grpc.md)。
 
-**通过条件**：能把“DNS 错误、TCP 连接失败、TLS 证书错误、HTTP 502”分开解释；知道现代 HTTP 不等于一律基于 TCP。
+### 第六阶段：网络编程
 
-## 第五阶段：自己用代码收发数据（第 10–12 周）
+[Socket 生命周期](./programming/socket-lifecycle.md) → [TCP 消息边界与长度前缀](./programming/tcp-message-framing.md) → [阻塞/非阻塞与 IO 多路复用](./programming/io-multiplexing.md) → [Java NIO 与 Netty](./programming/java-nio-netty.md) → [Qt QTcpSocket](./programming/qt-network.md)。
 
-22. [22 Socket 生命周期：bind/listen/accept/connect](./programming/socket-lifecycle.md)
-23. [23 TCP 粘包/半包为何发生：消息帧设计](./programming/tcp-message-framing.md)
-24. [24 阻塞、非阻塞、select/poll/epoll、Reactor](./programming/io-multiplexing.md)
-25. [25 Java Socket → NIO → Netty](./programming/java-nio-netty.md)
-26. [26 Qt QTcpSocket/QTcpServer 与线程归属](./programming/qt-network.md)
+### 第七阶段：抓包与排障
 
-**本阶段自测**：设计长度前缀协议并验证跨语言互通，通过条件：自行处理半包、编码、字节序，分清连接成功与业务成功。
+[按协议层排查](./operations/troubleshooting-order.md) → [Wireshark/tcpdump](./operations/packet-capture-basics.md) → [超时、重试与幂等](./operations/timeouts-retries-idempotency.md) → [代理与负载均衡](./operations/reverse-proxy-load-balancer.md)。
 
-## 第六阶段：定位故障和设计工程级通信（第 13–16 周）
+### 第八阶段：性能、安全与容器网络
 
-27. [27 按 DNS → 路由 → TCP → TLS → HTTP 排障](./operations/troubleshooting-order.md)
-28. [28 Wireshark/tcpdump 抓包与推断边界](./operations/packet-capture-basics.md)
-29. [29 超时、重试、幂等、截止时间](./operations/timeouts-retries-idempotency.md)
-30. [30 反向代理与负载均衡：502/504](./operations/reverse-proxy-load-balancer.md)
-31. [31 网络性能：带宽、吞吐、P99](./advanced/network-performance.md)
-32. [32 网络安全：防火墙、TLS、认证/授权](./advanced/network-security.md)
-33. [33 容器与 Kubernetes 网络的基本路径](./advanced/container-networking.md)
+[带宽、RTT、吞吐与 P99](./advanced/network-performance.md) → [网络安全边界](./advanced/network-security.md) → [容器和 Kubernetes 网络](./advanced/container-networking.md)。
 
-**本阶段自测**：按分层顺序独立完成诊断，通过条件：能提交“现象 → 假设 → 复现/抓包 → 排除 → 根因/下一步 → 修复与预防”的完整报告。
+## 如何验收：以可独立解释和观察为准
 
-## 每一阶段的可操作验收
+| 阶段 | 必须独立完成的验收动作 | 达标标准 |
+|---|---|---|
+| 01 | 画出一次网页请求的主要路径；区分域名、IP、MAC、端口 | 能说出每个标识解决哪个问题，准确标出封装的主要层次 |
+| 02 | 查看本机网卡地址、邻居缓存和默认网关 | 能解释一次 ARP 查找为何出现，以及交换机与路由器职责的区别 |
+| 03 | 计算 `192.168.1.40/27` 和 `10.20.30.70/26` 的网络地址；查看路由表 | 算对网络范围，能解释本地通信与跨网段通信的下一跳 |
+| 04 | 识别一段 SYN/SYN-ACK/ACK 抓包，解释 ACK、FIN、RST 与重传 | 不把连接成功等同于应用成功；能区分接收窗口与拥塞窗口 |
+| 05 | 用 curl 观察一次 HTTPS 请求；判断 DNS、TCP、TLS、HTTP 各环节是否通过 | 能准确解释 404、连接拒绝、证书验证失败属于不同阶段 |
+| 06 | 定义 4 字节大端长度前缀并实现跨语言发送/接收 | 连续或拆分发送消息都能正确还原；能解释 `recv()` 可能读不全 |
+| 07 | 面对“服务连不上”，依次收集 DNS、路由、端口、TLS 和应用证据 | 提交完整的“现象 → 假设 → 验证 → 排除 → 结论”过程，而非凭猜测下结论 |
+| 08 | 针对吞吐不足、P99 偏高或容器网络隔离，提出排查路径 | 能说出要观察哪些指标、如何验证瓶颈、优化措施的副作用 |
 
-| 阶段 | 不看资料，需要独立完成的事 |
+**升级条件**：不看答案、能解释机制、能拿到可重复的证据并完成本阶段验收，即可进入下一阶段。如果只记住术语却无法解释抓包/命令结果，应回到前一阶段补齐。
+
+## 按症状找：把概念应用到具体问题
+
+| 观察到的现象 | 先查哪个知识点 |
 |---|---|
-| 网络直觉 | 解释数据包、地址、端口、交换机、网关；本地启动一个 HTTP 服务 |
-| 寻址路由 | 计算 `192.168.1.40/27` 的网络地址；从路由表指出下一跳 |
-| TCP | 画出三次握手、解释 ACK/重传/TIME_WAIT，分析一个 pcap |
-| HTTP/TLS | 区分 HTTP 4xx/5xx 与 TLS 失败，用 curl 输出定位阶段 |
-| 网络编程 | 实现支持长度前缀的通信，Java 服务端 + Qt 客户端互通 |
-| 架构排障 | 解释超时后的不确定状态，提交一份有证据的故障诊断记录 |
+| 域名打不开，但直接访问 IP 可能正常 | [DNS](./dns-name-to-address.md) |
+| 两个地址是否同网段无法判断 | [IP、CIDR、路由](./ip-subnet-and-routing.md) |
+| `connection refused` 或 `timeout` | [端口拒绝与超时](./tcp-udp-refused-vs-timeout.md) |
+| 发送一次却接收多次，或者接收到半个消息 | [TCP 消息边界](./programming/tcp-message-framing.md) |
+| HTTPS 握手/证书出错 | [TLS](./application/https-tls.md) |
+| HTTP 返回 502/504 | [反向代理与负载均衡](./operations/reverse-proxy-load-balancer.md) |
+| Qt Socket 跨线程或事件循环卡顿 | [Qt 网络](./programming/qt-network.md) |
+| 宿主机可访问、容器内不可访问 | [容器网络](./advanced/container-networking.md) |
 
-## 为不同使用意图建立入口
+## 按决策查：先判断问题属于哪个层次
 
-### 按症状找：出现问题直接查
+- **选择通信协议**：先明确消息边界、可靠性、交互模式，再评价 TCP、UDP、HTTP、WebSocket、gRPC。
+- **选择并发模型**：先保证 Socket 正确性和完整的收发语义，再评价非阻塞 IO、事件循环或 Netty。
+- **决定是否重试**：先回答“请求可能执行成功了吗、重复执行是否安全”，再制定超时与重试策略。
+- **决定是否调优**：先有耗时、吞吐、丢包和尾延迟证据，再讨论参数和架构取舍。
 
-| 现象 | 第一篇 |
-|---|---|
-| 域名能不能解析？ | [DNS](./dns-name-to-address.md) |
-| 端口拒绝或超时？ | [拒绝与超时](./tcp-udp-refused-vs-timeout.md) |
-| 不同网段连不通？ | [IP、子网与路由](./ip-subnet-and-routing.md) |
-| 服务器发了 N 条，客户端收到 M 次？ | [TCP 消息边界](./programming/tcp-message-framing.md) |
-| HTTPS 提示证书无效？ | [TLS](./application/https-tls.md) |
-| 服务端 502/504？ | [代理与负载均衡](./operations/reverse-proxy-load-balancer.md) |
-| Qt socket 跨线程？ | [Qt 网络](./programming/qt-network.md) |
-| 容器能不能访问宿主机服务？ | [容器网络](./advanced/container-networking.md) |
-
-### 按路径学：按专题导航
-
-- [零基础](./foundations/README.md) → [局域网](./lan/README.md) → [跨网段](./internet/README.md) → [TCP/UDP](./transport/README.md) → [HTTP/TLS](./application/README.md) → [网络编程](./programming/README.md) → [运行排障](./operations/README.md) → [高级专题](./advanced/README.md)
-- [基础术语表](./glossary.md) · [筛选后的高质量资料与实践经验贴](./reading-list.md)
-
-### 按决策查：先明确优先级
-
-1. **协议选型**：先看可靠性、消息边界、延迟需求，再看 TCP/UDP/WebSocket/gRPC。
-2. **网络并发**：先保证同步实现正确，再看非阻塞和事件循环；不要先照搬 epoll/Netty 优化参数。
-3. **失败恢复**：任何重试都要先问操作是否可安全重做，再决定重试策略。
-4. **性能与安全**：必须有延迟分布、抓包、日志等数据支持，不能用单次 ping 或“内网可信”代替证据。
-
-## 推荐第一天就做的事
-
-先学第 01、02、03 篇；再做实验 01。把得到的实际输出写进实验记录。之后每学一个机制，画一次过程图、执行一项验证命令、回答对应文档的自测题。
+更多资料请查[高质量教程、权威文档与经验帖索引](./reading-list.md)。实践工程、实验代码和故障复盘集中保存在独立项目域，由项目文档引用这里的基础知识。
 
 ## 修订记录
 
 | 日期 | 作者 | 变更 |
 |---|---|---|
 | 2026-10-14 | zmd6s6 | 从目录列表改为线性学习路径 |
-| 2026-10-15 | zmd6s6 | 扩展为 16 周零基础到架构实战路线，接入原有四篇与 8 个实验、资料索引 |
+| 2026-10-15 | zmd6s6 | 扩展为 16 周零基础到架构实战路线，接入原有四篇与实验、资料索引 |
 | 2026-10-15 | zmd6s6 | 按 AGENTS.md 将项目实践入口从基础域移除，保留纯知识验收 |
+| 2026-10-15 | zmd6s6 | 去除时间安排，统一为八阶段与逐阶段验收；整合旧知识文档的导航 |
