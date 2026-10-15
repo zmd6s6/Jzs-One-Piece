@@ -9,7 +9,7 @@ tags:
   - fundamentals
 status: active
 created: 2026-10-14
-updated: 2026-10-14
+updated: 2026-10-15
 ---
 
 # IP、子网与路由：为什么 ping 得通 A 却连不上 B
@@ -51,15 +51,17 @@ updated: 2026-10-14
 
 ## 回到开头的现象
 
-`192.168.2.x`（你所在的小区）到 `192.168.8.x` 之间的路上，可能有个网络设备（防火墙/网闸）**只放行了某些类型的通行**（比如只许 SSH 去 197，不许去 6.110 的 80 端口），甚至物理上就没修路。所以"公司内网"其实是**多个小区 + 之间一组各自为政的路**——排查"某网段不通"时的正确动作是：逐段测（本机→网关→目标），并区分[拒绝与超时](./tcp-udp-refused-vs-timeout.md)。
+`192.168.2.x`（你所在的小区）到 `192.168.8.x` 之间的路上，可能有个网络设备（防火墙/网闸）**只放行了某些类型的通行**（比如允许访问某网段 TCP 22 端口，却不允许 TCP 80 端口），甚至物理上就没修路。所以"公司内网"其实是**多个小区 + 之间一组各自为政的路**——排查"某网段不通"时的正确动作是：逐段测（本机→网关→目标），并区分[拒绝与超时](./tcp-udp-refused-vs-timeout.md)。
 
-## 实战应用
+## 相关知识
 
-- [跨网段间歇失联事故](../projects/medical-platform/incidents/intermittent-subnet-outage.md)——"构建前半段还通、上传阶段断了"的定位过程；
-- [项目实践：轻量集群交付](../projects/medical-platform/README.md)——"机器少、网段隔离"这些约束如何影响方案选型。
+- [CIDR 子网计算](./internet/subnet-cidr-calculation.md)
+- [ARP 和以太网交换](./lan/ethernet-switch-arp.md)
+- [ICMP 与链路诊断](./internet/icmp-and-path-probing.md)
 
 ## 修订记录
 
 | 日期 | 作者 | 变更 |
 |---|---|---|
 | 2026-10-14 | zmd6s6 | 创建（含基础知识串联） |
+| 2026-10-15 | zmd6s6 | 按 AGENTS.md 分离基础机制和项目案例；修正泛化或易误导表述 |
