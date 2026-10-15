@@ -26,7 +26,7 @@ updated: 2026-10-15
 | 路由器 Router | 在不同网络之间转发数据包 | [路由](./ip-subnet-and-routing.md) |
 | MAC | 链路层接口标识 | [四种地址](./foundations/four-kinds-of-address.md) |
 | IP | 网络层寻址标识 | [四种地址](./foundations/four-kinds-of-address.md) |
-| 子网 Subnet | 共享同一网络前缀的地址分组 | [CIDR](./internet/subnet-cidr-calculation.md) |
+| 子网 Subnet | 共享同一网络前缀的地址分组 | [IP 与 CIDR](./ip-subnet-and-routing.md) |
 | 默认网关 Gateway | 目标不在本地网段时的默认下一跳 | [路由](./ip-subnet-and-routing.md) |
 | ARP | IPv4 到本链路地址的映射机制 | [交换与 ARP](./lan/ethernet-switch-arp.md) |
 | DNS | 名字与地址等信息的查询体系 | [DNS](./dns-name-to-address.md) |
@@ -55,3 +55,4 @@ updated: 2026-10-15
 | 日期 | 作者 | 变更 |
 |---|---|---|
 | 2026-10-15 | zmd6s6 | 创建、建立学习入口和参考资料 |
+| 2026-10-15 | zmd6s6 | 子网和 CIDR 统一指向既有 IP 与路由主文档 |
