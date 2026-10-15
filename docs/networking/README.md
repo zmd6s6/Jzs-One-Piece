@@ -32,7 +32,7 @@ updated: 2026-10-15
 5. [05 DHCP 如何分配 IP、网关、DNS](./lan/dhcp-automatic-addressing.md)
 6. [06 Wi-Fi 为什么信号满格还可能卡](./lan/wifi-and-ethernet.md)
 
-**本阶段实验**：[实验 01 — 本地 HTTP](../projects/networking-labs/lab01-http-local.md)。通过条件：能画出“客户端 → 地址解析 → 网络 → 服务端 → 响应”，说出四种地址的不同职责。
+**本阶段自测**：在本机启动 HTTP 服务并通过 curl 请求，通过条件：能画出“客户端 → 地址解析 → 网络 → 服务端 → 响应”，说出四种地址的不同职责。
 
 ## 第二阶段：明白包是如何跨网络送达的（第 3–4 周）
 
@@ -42,7 +42,7 @@ updated: 2026-10-15
 10. [10 NAT 与端口转发（已有知识页）](./nat-and-port-forward.md)
 11. [11 IPv6：地址族、邻居发现和双栈](./internet/ipv6-first-look.md)
 
-**本阶段实验**：[实验 02 — DNS 对比](../projects/networking-labs/lab02-dns-observation.md)、[实验 03 — 子网路由](../projects/networking-labs/lab03-subnet-routing.md)、[实验 04 — ARP/ICMP](../projects/networking-labs/lab04-arp-icmp.md)。通过条件：能算网络地址/广播地址，区分本地目标与下一跳。
+**本阶段自测**：分别观察 DNS、子网路由、ARP 和 ICMP，通过条件：能算网络地址/广播地址，区分本地目标与下一跳。
 
 ## 第三阶段：真正理解 TCP，而不只会背三次握手（第 5–7 周）
 
@@ -52,7 +52,7 @@ updated: 2026-10-15
 15. [15 序列号、ACK、重传、接收窗口](./transport/tcp-reliability.md)
 16. [16 流量控制、拥塞控制、RTT 与 BDP](./transport/tcp-congestion-control.md)
 
-**本阶段实验**：[实验 05 — TCP 握手与关闭抓包](../projects/networking-labs/lab05-tcp-handshake.md)。通过条件：拿出一段抓包，解释标志位与序列号，理解 TCP 不保存应用消息边界。
+**本阶段自测**：抓取一次 TCP 握手与关闭过程，通过条件：拿出一段抓包，解释标志位与序列号，理解 TCP 不保存应用消息边界。
 
 ## 第四阶段：应用为什么要用 DNS/HTTP/TLS（第 8–9 周）
 
@@ -72,7 +72,7 @@ updated: 2026-10-15
 25. [25 Java Socket → NIO → Netty](./programming/java-nio-netty.md)
 26. [26 Qt QTcpSocket/QTcpServer 与线程归属](./programming/qt-network.md)
 
-**本阶段实验**：[实验 06 — 长度前缀 TCP 协议](../projects/networking-labs/lab06-length-prefix.md)、[实验 07 — Java 服务端 × Qt 客户端](../projects/networking-labs/lab07-java-qt-echo.md)。通过条件：自行处理半包、编码、字节序，分清连接成功与业务成功。
+**本阶段自测**：设计长度前缀协议并验证跨语言互通，通过条件：自行处理半包、编码、字节序，分清连接成功与业务成功。
 
 ## 第六阶段：定位故障和设计工程级通信（第 13–16 周）
 
@@ -84,7 +84,7 @@ updated: 2026-10-15
 32. [32 网络安全：防火墙、TLS、认证/授权](./advanced/network-security.md)
 33. [33 容器与 Kubernetes 网络的基本路径](./advanced/container-networking.md)
 
-**本阶段实验**：[实验 08 — 综合诊断](../projects/networking-labs/lab08-network-debug.md)。通过条件：能提交“现象 → 假设 → 复现/抓包 → 排除 → 根因/下一步 → 修复与预防”的完整报告。
+**本阶段自测**：按分层顺序独立完成诊断，通过条件：能提交“现象 → 假设 → 复现/抓包 → 排除 → 根因/下一步 → 修复与预防”的完整报告。
 
 ## 每一阶段的可操作验收
 
@@ -115,7 +115,7 @@ updated: 2026-10-15
 ### 按路径学：按专题导航
 
 - [零基础](./foundations/README.md) → [局域网](./lan/README.md) → [跨网段](./internet/README.md) → [TCP/UDP](./transport/README.md) → [HTTP/TLS](./application/README.md) → [网络编程](./programming/README.md) → [运行排障](./operations/README.md) → [高级专题](./advanced/README.md)
-- [基础术语表](./glossary.md) · [筛选后的高质量资料与实践经验贴](./reading-list.md) · [8 个实验的操作入口](../projects/networking-labs/README.md)
+- [基础术语表](./glossary.md) · [筛选后的高质量资料与实践经验贴](./reading-list.md)
 
 ### 按决策查：先明确优先级
 
@@ -134,3 +134,4 @@ updated: 2026-10-15
 |---|---|---|
 | 2026-10-14 | zmd6s6 | 从目录列表改为线性学习路径 |
 | 2026-10-15 | zmd6s6 | 扩展为 16 周零基础到架构实战路线，接入原有四篇与 8 个实验、资料索引 |
+| 2026-10-15 | zmd6s6 | 按 AGENTS.md 将项目实践入口从基础域移除，保留纯知识验收 |
