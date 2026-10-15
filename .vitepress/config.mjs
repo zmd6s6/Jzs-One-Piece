@@ -15,7 +15,11 @@ const directoryNames = {
   handbook: '金融基础手册', casebook: '真实案例',
   'foundations-48-day': '48 天学习计划', templates: '研究模板',
   'medical-platform': '医疗信息化平台',
-  kubernetes: 'Kubernetes', internals: '机制原理'
+  kubernetes: 'Kubernetes', internals: '机制原理',
+  foundations: '零基础网络直觉', lan: '局域网', internet: 'IP 与路由',
+  transport: 'TCP 与 UDP', application: 'DNS、HTTP 与 TLS',
+  programming: 'Socket 与网络编程', operations: '抓包与故障排查',
+  advanced: '性能、安全与容器网络', 'networking-labs': '计算机网络动手实验'
 }
 function title(path) {
   const source = readFileSync(join(root, path), 'utf8')

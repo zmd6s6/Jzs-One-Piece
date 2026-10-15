@@ -7,6 +7,7 @@ This directory is the canonical knowledge root.
 - [C++](./cpp/README.md)
 - [Qt](./qt/README.md)
 - [Backend](./backend/README.md)
+- [计算机网络：16 周系统路线](./networking/README.md)（网络分层 → TCP/IP → HTTP/TLS → Java/Qt 编程 → 抓包排障）
 - [DevOps](./devops/README.md)
 - [AI](./ai/README.md)
 - [Architecture](./architecture/README.md)
