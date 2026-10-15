@@ -18,7 +18,7 @@ updated: 2026-10-15
 `192.168.10.30/27` 和 `192.168.10.40/27` 看着相近，但落在不同子网。
 
 ## 前置知识
-[IP、子网与路由](../../networking/ip-subnet-and-routing.md) → [CIDR 计算](../../networking/internet/subnet-cidr-calculation.md)。
+[IP、子网与路由](../../networking/ip-subnet-and-routing.md)（其中已包含 CIDR 子网计算）。
 
 ## 纸笔步骤
 1. `/27` 留下 5 位主机位，块大小 `32`。
@@ -51,3 +51,4 @@ route print -4
 | 日期 | 作者 | 变更 |
 |---|---|---|
 | 2026-10-15 | zmd6s6 | 新建动手实验与验收标准 |
+| 2026-10-15 | zmd6s6 | 子网计算前置知识改为合并后的主知识页 |
