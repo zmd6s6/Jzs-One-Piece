@@ -17,7 +17,7 @@ updated: 2026-10-15
 1. [交换机、以太网帧与 ARP](./ethernet-switch-arp.md)
 2. [DHCP 与 IPv4 自动配置](./dhcp-automatic-addressing.md)
 3. [Wi-Fi 为什么也是一种链路](./wifi-and-ethernet.md)
-4. [IP、子网、网关与路由（已有笔记）](../ip-subnet-and-routing.md)
+4. 下一阶段学习[IP、子网、网关与路由](../internet/README.md)
 
 ## 按症状找
 | 现象 | 对应知识 |
@@ -36,3 +36,4 @@ updated: 2026-10-15
 | 日期 | 作者 | 变更 |
 |---|---|---|
 | 2026-10-15 | zmd6s6 | 初建线性学习笔记、例子与验收题 |
+| 2026-10-15 | zmd6s6 | 将路由专题归到第三阶段，局域网阶段保留正确前置链接 |
