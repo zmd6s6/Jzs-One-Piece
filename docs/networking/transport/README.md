@@ -15,10 +15,10 @@ updated: 2026-10-15
 
 ## 按路径学
 1. [TCP 和 UDP 分别在解决什么问题](./tcp-vs-udp.md)
-2. [TCP 三次握手、四次挥手与状态机](./tcp-connection-lifecycle.md)
-3. [序列号、ACK、超时重传、接收窗口](./tcp-reliability.md)
-4. [流量控制与拥塞控制为什么不是一回事](./tcp-congestion-control.md)
-5. 衔接已有笔记：[端口拒绝和超时](../tcp-udp-refused-vs-timeout.md)。
+2. [端口、连接拒绝与超时的不同含义](../tcp-udp-refused-vs-timeout.md)
+3. [TCP 三次握手、四次挥手与状态机](./tcp-connection-lifecycle.md)
+4. [序列号、ACK、超时重传、接收窗口](./tcp-reliability.md)
+5. [流量控制与拥塞控制为什么不是一回事](./tcp-congestion-control.md)
 
 ## 按症状找
 | 现象 | 核心机制 |
@@ -37,3 +37,4 @@ updated: 2026-10-15
 | 日期 | 作者 | 变更 |
 |---|---|---|
 | 2026-10-15 | zmd6s6 | 初建线性学习内容及验证问题 |
+| 2026-10-15 | zmd6s6 | 把旧端口诊断笔记纳入传输层正式学习顺序 |
