@@ -15,10 +15,12 @@ updated: 2026-10-15
 # 实验 02：一次域名解析与一次 HTTPS 请求的区别
 
 ## 要验证的现象
-名字解析只是获取连接线索，不意味着业务服务已经可用。
+你查通讯录知道餐厅地址，不代表餐厅今天一定营业。网络里也是一样：知道网站的 IP 地址，不表示一定能安全打开页面。
+
+这里 **DNS** 相当于查询地址的通讯录；**HTTPS** 是受到安全保护的网页通信；**curl** 是从命令行向网站提出请求的工具。
 
 ## 前置知识
-[域名、IP、端口](../../networking/foundations/four-kinds-of-address.md) → [DNS](../../networking/dns-name-to-address.md)。
+[域名、IP、端口](../../networking/foundations/four-kinds-of-address.md) → [DNS](../../networking/dns-name-to-address.md) → [HTTP](../../networking/application/http-core.md) → [HTTPS/TLS](../../networking/application/https-tls.md)。
 
 ## 环境与命令
 ```bash
@@ -45,3 +47,4 @@ Windows PowerShell 可用 `Resolve-DnsName example.com`；若 `curl` 是系统�
 | 日期 | 作者 | 变更 |
 |---|---|---|
 | 2026-10-15 | zmd6s6 | 新建动手实验与验收标准 |
+| 2026-10-15 | zmd6s6 | 加入查询地址与访问服务的直觉区别及 HTTPS 前置知识 |
