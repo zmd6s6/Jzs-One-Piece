@@ -13,7 +13,7 @@ updated: 2026-10-15
 
 # 个人知识库知识地图
 
-这里是知识库的 Markdown 权威入口。文章应遵守仓库 [AGENTS.md](../AGENTS.md) 规范。
+这里是知识库的 Markdown 权威入口。文章应遵守仓库 [AGENTS.md](https://github.com/zmd6s6/Jzs-One-Piece/blob/main/AGENTS.md) 规范。
 
 ## 领域导航
 
