@@ -20,7 +20,7 @@ updated: 2026-10-15
 - [C++](./cpp/README.md)
 - [Qt](./qt/README.md)
 - [Backend](./backend/README.md)
-- [计算机网络：16 周系统路线](./networking/README.md)（网络分层 → TCP/IP → HTTP/TLS → Java/Qt 编程 → 抓包排障）
+- [计算机网络：分阶段学习与验收](./networking/README.md)（网络分层 → TCP/IP → HTTP/TLS → Java/Qt 编程 → 抓包排障）
 - [DevOps](./devops/README.md)
 - [AI](./ai/README.md)
 - [Architecture](./architecture/README.md)
@@ -39,3 +39,4 @@ updated: 2026-10-15
 | 日期 | 作者 | 变更 |
 |---|---|---|
 | 2026-10-15 | zmd6s6 | 补充元数据、实验域独立入口与修订记录 |
+| 2026-10-15 | zmd6s6 | 网络领域入口改为按阶段学习与验收，不再出现时间计划 |
