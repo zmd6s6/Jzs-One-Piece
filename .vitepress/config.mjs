@@ -21,6 +21,21 @@ const directoryNames = {
   programming: 'Socket 与网络编程', operations: '抓包与故障排查',
   advanced: '性能、安全与容器网络', 'networking-labs': '计算机网络动手实验'
 }
+// Preserve original Markdown URLs, but display the legacy network notes in their learning stage.
+const networkingStageOrder = [
+  'foundations', 'lan', 'internet', 'transport',
+  'application', 'programming', 'operations', 'advanced'
+];
+const networkingLegacyRootPages = new Set([
+  'ip-subnet-and-routing.md', 'nat-and-port-forward.md',
+  'tcp-udp-refused-vs-timeout.md', 'dns-name-to-address.md'
+]);
+const networkingStageReferences = {
+  'docs/networking/internet': ['docs/networking/ip-subnet-and-routing.md', 'docs/networking/nat-and-port-forward.md'],
+  'docs/networking/transport': ['docs/networking/tcp-udp-refused-vs-timeout.md'],
+  'docs/networking/application': ['docs/networking/dns-name-to-address.md']
+};
+
 function title(path) {
   const source = readFileSync(join(root, path), 'utf8')
   const { data, content } = matter(source)
@@ -29,7 +44,13 @@ function title(path) {
 function items(path) {
   const entries = readdirSync(join(root, path), { withFileTypes: true })
     .filter(entry => !entry.name.startsWith('.'))
-    .sort((a, b) => a.name.localeCompare(b.name, 'en', { numeric: true }))
+    .sort((a, b) => {
+      // Root network sidebar follows the learning path, rather than alphabetic folders.
+      if (path === 'docs/networking' && a.isDirectory() && b.isDirectory()) {
+        return networkingStageOrder.indexOf(a.name) - networkingStageOrder.indexOf(b.name)
+      }
+      return a.name.localeCompare(b.name, 'en', { numeric: true })
+    })
   const readme = entries.find(entry => entry.name === 'README.md')
   const result = readme ? [{ text: '概览', link: `/${path}/README` }] : []
   for (const entry of entries) {
@@ -37,8 +58,19 @@ function items(path) {
     if (entry.isDirectory()) {
       result.push({ text: directoryNames[entry.name] || entry.name, collapsed: true, items: items(relative) })
     } else if (entry.name.endsWith('.md') && entry.name !== 'README.md') {
+      // Historical pages keep their stable URLs, but deprecated duplicates are not separate lessons.
+      if (path === 'docs/networking' && networkingLegacyRootPages.has(entry.name)) continue
+      if (path.startsWith('docs/networking/')) {
+        const { data } = matter(readFileSync(join(root, relative), 'utf8'))
+        if (data.status === 'deprecated') continue
+      }
       result.push({ text: title(relative), link: `/${relative.slice(0, -3)}` })
     }
+  }
+  const extra = networkingStageReferences[path] || []
+  // Keep the old physical pages under docs/networking/, but surface them under their logical stage.
+  for (const page of [...extra].reverse()) {
+    result.splice(1, 0, { text: title(page), link: `/${page.slice(0, -3)}` })
   }
   return result
 }
