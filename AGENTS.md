@@ -39,7 +39,7 @@ Knowledge documents should contain:
 ---
 title: Document Title
 description: One-sentence description
-category: cpp | qt | backend | devops | ai | architecture | projects | finance | notes
+category: cpp | qt | backend | networking | devops | ai | architecture | projects | finance | notes
 tags:
   - tag
 status: draft | active | stable | deprecated
@@ -178,3 +178,7 @@ When a website is added:
 Documents should remain semantically self-contained enough to chunk and retrieve.
 
 Prefer explicit headings and terminology over references such as “as mentioned earlier” when the referenced context is critical.
+
+## Continuous Validation
+
+For additions or changes to network learning materials, CI must check Markdown metadata, author/revision history, internal link targets, directory map pages, and cross-domain project references. PR build success alone does **not** establish successful production deployment: validate the live Pages URL after deployment on `main`. If publication status cannot be verified, report it as unknown rather than claiming success.
