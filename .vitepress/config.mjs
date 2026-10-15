@@ -36,6 +36,35 @@ const networkingStageReferences = {
   'docs/networking/application': ['docs/networking/dns-name-to-address.md']
 };
 
+const networkingLessonOrder = {
+  'docs/networking/foundations': [
+    'first-network-request', 'bits-bytes-and-packets', 'layers-and-encapsulation', 'four-kinds-of-address'
+  ],
+  'docs/networking/lan': [
+    'home-network-devices', 'ethernet-switch-arp', 'dhcp-automatic-addressing', 'wifi-and-ethernet'
+  ],
+  'docs/networking/internet': [
+    'ip-subnet-and-routing', 'icmp-and-path-probing', 'nat-and-port-forward', 'ipv6-first-look'
+  ],
+  'docs/networking/transport': [
+    'tcp-vs-udp', 'tcp-udp-refused-vs-timeout', 'tcp-connection-lifecycle', 'tcp-reliability', 'tcp-congestion-control'
+  ],
+  'docs/networking/application': [
+    'dns-name-to-address', 'http-core', 'https-tls', 'http-versions',
+    'browser-request-walkthrough', 'websocket-grpc'
+  ],
+  'docs/networking/programming': [
+    'socket-lifecycle', 'tcp-message-framing', 'io-multiplexing', 'java-nio-netty', 'qt-network'
+  ],
+  'docs/networking/operations': [
+    'troubleshooting-order', 'packet-capture-basics',
+    'timeouts-retries-idempotency', 'reverse-proxy-load-balancer'
+  ],
+  'docs/networking/advanced': [
+    'network-performance', 'network-security', 'container-networking'
+  ]
+}
+
 function title(path) {
   const source = readFileSync(join(root, path), 'utf8')
   const { data, content } = matter(source)
@@ -74,6 +103,20 @@ function items(path) {
   // Keep the old physical pages under docs/networking/, but surface them under their logical stage.
   for (const page of [...extra].reverse()) {
     result.splice(1, 0, { text: title(page), link: `/${page.slice(0, -3)}` })
+  }
+  // The sidebar must follow prerequisite order, not the alphabetical English slugs.
+  const stageOrder = networkingLessonOrder[path]
+  if (stageOrder) {
+    const ranked = result.slice(1).sort((a, b) => {
+      const idA = a.link?.split('/').at(-1) || ''
+      const idB = b.link?.split('/').at(-1) || ''
+      const rank = id => {
+        const index = stageOrder.indexOf(id)
+        return index === -1 ? Number.MAX_SAFE_INTEGER : index
+      }
+      return rank(idA) - rank(idB)
+    })
+    result.splice(1, result.length - 1, ...ranked)
   }
   return result
 }

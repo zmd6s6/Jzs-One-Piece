@@ -1,7 +1,7 @@
 ---
 title: 计算机网络学习资料库：权威教材、图解帖和抓包实战
 author: zmd6s6
-description: 按阶段筛选公开可访问的高质量网络资料，区分教程、原理深读、实战手册与标准。
+description: 将公开的权威教程与实践资源按零基础、机制深读、动手实验、进阶规范分级，标注每篇需要的前置知识。
 category: networking
 tags:
   - resources
@@ -11,59 +11,74 @@ created: 2026-10-15
 updated: 2026-10-15
 ---
 
-# 计算机网络学习资料库：权威教材、图解帖和抓包实战
+# 计算机网络学习资料：严格按零基础、原理深化和动手验证分级
 
-> 选材准则：优先作者原站/课程官网；辅助资料只做补充，核心概念以规范和抓包互证；文章版本与系统环境会影响实验命令。本页只收录链接与阅读建议，不转载受版权保护的全文。
+## 为什么不推荐一开始就看“浏览器输入 URL 到网页出现的完整过程”
 
-## 零基础主线（第 1–5 阶段）
-| 资料 | 适合阶段 | 阅读建议 |
+你刚接触计算机网络时，可能连“客户端”“字节”“端口”都没学过。此时读复杂请求流程，虽然看到很多名称，却不知道哪一个能解决哪一个问题。**适合进阶复盘的文章，不一定适合作为第一课。**
+
+下面每一项都标注“读之前该懂什么”。**站外资料是辅助材料，本知识库的八阶段顺序才是学习主线。** 只提供作者原站或权威来源的链接，不搬运原文。
+
+## 入口级：完全零基础可以先读
+
+| 资源 | 先准备什么 | 为什么选它、怎么用 |
 |---|---|---|
-| [Beej's Guide to Networking Concepts](https://beej.us/guide/bgnet0/) | 零基础 | 免费英文入门，有分层概念与基础编程认知；先读核心章节 |
-| [Practical Networking — Network Fundamentals](https://www.practicalnetworking.net/classes/network-fundamentals/) | IP/子网、交换、路由 | 从二进制子网划分到 ARP、路由、TCP 的连续课程目录，部分完整课程可能需额外报名 |
-| [Practical Networking — Series](https://www.practicalnetworking.net/series/) | ARP/NAT 等 | 分主题连续文章，按前置阅读，特别适合补缺口 |
-| [小林 coding：图解计算机网络](https://xiaolincoding.com/network/) | TCP/HTTP/DNS | 中文图解；建议做二次推导而不是直接记结论 |
-| [小林 coding 源代码目录](https://github.com/xiaolincoder/CS-Base/tree/main/network) | 检索与离线目录 | 辅助查找具体篇目、阅读勘误 |
-| [MDN：HTTP 概述（中文）](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Guides/Overview) | HTTP | 用官方持续更新的文档理解 HTTP 语义及版本 |
-| [What happens when…](https://github.com/alex/what-happens-when) | 串联知识 | 从浏览器输入地址到 DNS、TCP、TLS、HTTP；内容范围广，具体细节需结合标准校对 |
+| [MDN：How does the Internet work?](https://developer.mozilla.org/en-US/docs/Learn_web_development/Howto/Web_mechanics/How_does_the_Internet_work) | 会用浏览器即可 | 首先解释互联网和网站的区别、网络设备如何互联；配[网页与客户端第一课](./foundations/first-network-request.md) |
+| [MDN：How the Web works](https://developer.mozilla.org/en-US/docs/Learn_web_development/Getting_started/Web_standards/How_the_web_works) | 知道客户端、服务器即可 | 使用商店等类比建立网页请求直觉；里面提到的 TCP/IP、HTTP 等先不死背，回到知识库逐项学习 |
+| [Beej's Guide to Network Concepts](https://beej.us/guide/bgnet0/html/) | 概念部分适合初学；编程实验需要一点 Python 基础 | 从 bytes、IP、传输等内容分步理解，选章节读，不必一上来做全部编程习题 |
+| [Practical Networking：Network Fundamentals](https://www.practicalnetworking.net/classes/network-fundamentals/) | 已认识地址与网卡 | 课程安排清楚，从二进制、子网到 ARP、交换与转发；页面有公开教学大纲，部分课堂内容可能需报名，**不要误以为所有课程完整免费** |
 
-## 深读帖子（第 4 阶段以后）
-| 文章 | 适用时机 | 阅读重点与提醒 |
+推荐做法：第一轮只选 MDN 的第一篇和本知识库[第一阶段](./foundations/README.md)，每学一篇问“这个机制解决哪个具体麻烦”，再挑 Beej 对照概念。
+
+## 机制级：懂基本地址以后，再深入
+
+| 资源 | 适合什么时候阅读 | 观察或验证什么 |
 |---|---|---|
-| [酷壳：TCP 的那些事儿（上）](https://coolshell.islumi.com/articles/11564) | 已懂握手/重传后 | 陈皓的经典深入分析，2014 年文章；涉及协议和实现细节时请用较新 RFC 核对 |
-| [Linux tcp(7) 手册](https://man7.org/linux/man-pages/man7/tcp.7.html) | 调 Socket 参数前 | 选项与 Linux 实现行为，优先看适用内核与版本 |
-| [RFC 9293（TCP）](https://www.rfc-editor.org/rfc/rfc9293) | 进阶校验 TCP | TCP 的现代整合规范；先按问题检索，不建议从头通读 |
-| [RFC 9000（QUIC）](https://www.rfc-editor.org/rfc/rfc9000) | HTTP/3 深读 | QUIC 的连接、多路复用与可靠传输规范 |
-| [MDN HTTP 文档库](https://developer.mozilla.org/zh-CN/docs/Web/HTTP) | HTTP 缓存、方法、状态码 | 解决接口设计和浏览器交互的细节问题 |
+| [Practical Networking：Packet Traveling 系列](https://www.practicalnetworking.net/series/) | 认识 IP/MAC/网关以后 | 通过 Packet Traveling、ARP、NAT 等前后相连的系列理解实际转发，**按该系列顺序阅读** |
+| [Practical Networking：Traditional ARP](https://www.practicalnetworking.net/series/arp/traditional-arp/) | 学到本地交付、ARP 后 | 对比“同网段查目标 MAC”与“跨网段查网关 MAC” |
+| [小林 coding《图解网络》](https://xiaolincoding.com/network/) | 已懂地址、TCP/UDP 基础后 | 中文图解 TCP、HTTP 等深一点的机制；作者说明主要面向已有一点网络基础的程序员 |
+| [陈皓《TCP 的那些事儿（上）》](https://coolshell.cn/articles/11564.html) | 学完 TCP 可靠性与连接后 | 深挖确认、滑动窗口与设计取舍；老文章中的版本细节要用现代规范校验 |
+| [MDN：HTTP 文档](https://developer.mozilla.org/zh-CN/docs/Web/HTTP) | 已读过[HTTP 入门](./application/http-core.md) | 请求方法、状态、缓存、HTTPS、版本等专题逐项核对 |
+| [WHAT HAPPENS WHEN…](https://github.com/alex/what-happens-when) | **必须学完 DNS、IP、TCP、HTTP、TLS 之后** | 用于完整流程回顾；作为补充，不要第一天就读或直接背答案 |
 
-## 真正动手的实践资源
-| 资源 | 实践价值 | 建议配套 |
+## 实践级：能解释基本原理之后亲眼看证据
+
+| 资源 | 需要先懂什么 | 建议的练习 |
 |---|---|---|
-| [Kurose / Ross 官方 Wireshark Labs（第 9 版）](https://gaia.cs.umass.edu/kurose_ross/wireshark.php) | 有入门、HTTP、DNS、TCP、UDP、IP、NAT、ARP、DHCP、TLS 等作业和抓包样本 | 完成网络基础概念后，每个阶段选择相关实验；遵守课程版权说明 |
-| [Wireshark User's Guide](https://www.wireshark.org/docs/wsug_html/) | 捕获接口、显示过滤器、Follow Stream、统计 | 抓包前读 Capture/Display Filters |
-| [Wireshark Capture Filters](https://wiki.wireshark.org/CaptureFilters) | 避免搞混捕获与显示过滤语法 | 配套[抓包笔记](./operations/packet-capture-basics.md) |
-| [Everything curl](https://everything.curl.dev/) | HTTP、DNS、TLS、超时、代理的命令实践 | 每次排障保留完整命令和脱敏输出 |
-| [Beej's Guide to Network Programming](https://beej.us/guide/bgnet/) | C/C++ Socket 入门到完整程序 | 实现自定义 TCP Echo/分帧 |
-| [Stanford CS144 2026](https://web.stanford.edu/class/cs144/) | 在 C/C++ 中逐步实现 TCP/IP 相关组件 | **进阶挑战**：课程有前置条件，不适合第一周直接开做 |
-| [Netty 4.x User Guide](https://netty.io/wiki/user-guide-for-4.x.html) | Java 事件循环和 ChannelPipeline | 先独立写 Socket/NIO 再学 |
-| [Qt QTcpSocket 官方 API](https://doc.qt.io/qt-6/qtcpsocket.html) | Qt 客户端通信、信号与生命周期 | 对照 Qt 所用版本 |
-| [Oracle Socket Tutorials](https://docs.oracle.com/javase/tutorial/networking/sockets/) | Java 基本 Socket 服务端/客户端 | 文档基于 JDK 8，作为概念入门非最新最佳实践 |
+| [Kurose/Ross 官方 Wireshark Labs](https://gaia.cs.umass.edu/kurose_ross/wireshark.php) | 基础分层及各协议作用 | 从 Getting Started 开始，再按 DNS、HTTP、TCP、IP 等主题选实验；观察真实报文 |
+| [Wireshark User's Guide](https://www.wireshark.org/docs/wsug_html/) | 知道“什么是抓包” | 找网卡、抓一段流量、使用显示过滤器；尊重隐私和授权 |
+| [Everything curl](https://everything.curl.dev/) | 知道 HTTP 请求与状态码 | 对比 `curl -i` 与 `curl -v` 能分别看什么；观察 DNS、TLS、状态码 |
+| [Beej's Guide to Network Programming](https://beej.us/guide/bgnet/) | 已学[Socket](./programming/socket-lifecycle.md)，有 C 编程基础 | 做最小客户端/服务器、理解字节序和消息边界 |
+| [Oracle Java Socket Tutorials](https://docs.oracle.com/javase/tutorial/networking/sockets/) | 已懂 TCP 与端口，会基础 Java | 写连接、发送、读取与 Echo；此文以较旧 JDK 教学，注意平台版本 |
+| [Qt QTcpSocket 官方文档](https://doc.qt.io/qt-6/qtcpsocket.html) | 已懂 TCP 和事件循环，会基础 Qt | 观察 connected、readyRead 与线程归属 |
+| [Netty 4.x User Guide](https://netty.io/wiki/user-guide-for-4.x.html) | 会 Java Socket/NIO | 建立 pipeline、handler 与消息解码器，别直接复制并发参数 |
 
-## 教材如何选
-1. 主教材：Kurose/Ross《计算机网络：自顶向下方法》；可结合[作者官方实验](https://gaia.cs.umass.edu/kurose_ross/wireshark.php)使用。**阅读路径以本知识库的零基础递进顺序为主**。
-2. 辅助教材：Stevens《TCP/IP 详解 卷 1：协议》，查包头、状态和协议细节时用，不作为新手第一本。
-3. 系统视角：《Computer Networks: A Systems Approach》由 Peterson/Davie 编著，可作体系化补充；版本与可访问性以出版方/作者页面为准。
+## 深度级：不要作为真正的第一本教材
 
-## 经验贴质量评估
-读任何“某个参数一调就快了”的帖子时，先问：
-- 有无清楚的 OS/内核/协议版本和拓扑？
-- 有无抓包或监控等可验证证据？
-- 观测结果和原因是否分开？
-- 是否把代理行为、应用实现误说成网络协议必然行为？
-- 是否解释副作用、资源成本与回滚方式？
+| 资源 | 为什么在后面读 |
+|---|---|
+| [Kurose/Ross《计算机网络：自顶向下方法》及官方教学网站](https://gaia.cs.umass.edu/kurose_ross/wireshark.php) | 系统性强，但抽象概念很多；已经具备一轮直觉再读更容易理解 |
+| [Stanford CS144](https://web.stanford.edu/class/cs144/) | 大学计算机网络课程及 C++ 项目，有明确编程与系统知识前置要求，适合完成第六阶段后挑战 |
+| [RFC 9293：TCP](https://www.rfc-editor.org/rfc/rfc9293) | 权威协议细节查证资料；不建议零基础从头阅读 |
+| [RFC 9000：QUIC](https://www.rfc-editor.org/rfc/rfc9000) | 理解 HTTP/3 和 QUIC 实现时查证 |
+| [Linux tcp(7)](https://man7.org/linux/man-pages/man7/tcp.7.html) | Linux 行为与 Socket 选项的具体参考，实操要核对内核版本 |
+
+## 怎样判断一个经验贴值不值得信
+
+看到“调整某个参数能解决网络慢”时，至少问：
+
+1. 作者有没有说清楚操作系统、内核、协议版本、测试拓扑？
+2. 有没有提供命令输出、抓包或监控指标，不只是主观“感觉变快”？
+3. 有没有把观察事实与猜测分开，并对不同可能原因做过排除？
+4. 有没有讲明白副作用、失败情况和回滚办法？
+5. 这篇是在讲*协议必然行为*，还是只讲*某个系统的实现*？
+
+实践和真实复盘应保存到项目域，而不是把事故文字塞进基础知识章节。
 
 ## 相关知识
-- [16 周学习地图](./README.md)
-- [网络知识地图](./README.md)
+
+- [按阶段学习与验收](./README.md)
+- [零基础术语表](./glossary.md)
 
 ## 修订记录
 
@@ -72,3 +87,4 @@ updated: 2026-10-15
 | 2026-10-15 | zmd6s6 | 创建、建立学习入口和参考资料 |
 | 2026-10-15 | zmd6s6 | 修正学习资料索引跨项目域链接 |
 | 2026-10-15 | zmd6s6 | 移除资料表内按周学习建议，改为知识前置与阶段实践 |
+| 2026-10-15 | zmd6s6 | 核对官方资料，按前置知识重分阅读梯度，修复酷壳原文链接，移除零基础阶段术语轰炸 |
