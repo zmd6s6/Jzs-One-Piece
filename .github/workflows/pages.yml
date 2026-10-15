@@ -26,7 +26,12 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npm run docs:build
+      - name: Validate networking knowledge (AGENTS.md)
+        run: npm run docs:check
+      - name: Build VitePress site
+        run: npm run docs:build
+      - name: Verify generated Pages HTML
+        run: npm run docs:check-output
       - uses: actions/upload-pages-artifact@v3
         if: github.event_name != 'pull_request'
         with:
@@ -46,3 +51,16 @@ jobs:
       - uses: actions/configure-pages@v5
       - uses: actions/deploy-pages@v4
         id: deployment
+      - name: Verify published Pages URLs
+        shell: bash
+        run: |
+          base="${{ steps.deployment.outputs.page_url }}"
+          if [ -z "$base" ]; then
+            echo "::error::GitHub Pages deployment did not return page_url"
+            exit 1
+          fi
+          for path in "" "docs/networking/README.html" "docs/projects/networking-labs/README.html"; do
+            url="${base%/}/${path:+$path}"
+            echo "Checking deployed page: $url"
+            curl --fail --location --silent --show-error --retry 10 --retry-delay 6 --retry-all-errors "$url" -o /dev/null
+          done
